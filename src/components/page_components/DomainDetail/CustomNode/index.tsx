@@ -6,7 +6,7 @@ function CustomNode(props: NodeProps | any) {
   const { data, isConnectable, handleIconClick } = props;
 
   return (
-    <div className='w-fit    text-black px-[10px] '>
+    <div className='w-fit bg-white text-black px-[10px] rounded-lg '>
       {/* <NodeResizer minWidth={160} minHeight={30} /> */}
       <Handle
         type='target'
@@ -15,7 +15,7 @@ function CustomNode(props: NodeProps | any) {
         onConnect={(params: any) => console.log('handle onConnect', params)}
         isConnectable={isConnectable}
       />
-      <div className='flex flex-col w-fit h-fit'>
+      <div className='flex flex-col w-fit h-fit cursor-pointer'>
         <div className='label flex items-center justify-center text-black'>
           {data.label.includes('.') ? (
             <span className='flex items-center'>

@@ -12,6 +12,7 @@ import {
   MarkerType,
   MiniMap,
   Node,
+  NodeDragHandler,
   NodeTypes,
   ReactFlow,
   useEdgesState,
@@ -58,16 +59,9 @@ import useUser from '@/hooks/useUser';
 import Link from 'next/link';
 import Script from 'next/script';
 
-const padding = 10;
-const gap = 10;
+const padding = 20;
+const gap = 25;
 const iconSize = 24;
-
-// const nodeTypes = {
-//   selectorNode: CustomNode,
-// };
-// const edgeTypes = {
-//   floating: FloatingEdge,
-// };
 
 function Codebase() {
   const router = useRouter();
@@ -113,189 +107,187 @@ function Codebase() {
   );
 
   /** *************Click Event********** */
-  const createNewEdges = (selectedNode: Node, newNodes: Node[]) => {
-    const allNodes = nodes
-      .concat(newNodes)
-      .filter(
-        (n: Node) => n.id !== selectedNode.id && n.data.isExpand !== true
+  const createNewEdges = useCallback(
+    (selectedNode: Node, newNodes: Node[]) => {
+      const allNodes = nodes
+        .concat(newNodes)
+        .filter(
+          (n: Node) => n.id !== selectedNode.id && n.data.isExpand !== true
+        );
+
+      const possibleConnections = mapData.edges.filter((ed: any) =>
+        allNodes.find(
+          (fN) => ed.from.includes(`/${fN.id}`) || ed.from === fN.id
+        )
       );
 
-    const possibleConnections = mapData.edges.filter((ed: any) =>
-      allNodes.find((fN) => ed.from.includes(`/${fN.id}`) || ed.from === fN.id)
-    );
+      const egdesMap = new Map<string, Edge>();
 
-    const egdesMap = new Map<string, Edge>();
+      allNodes.forEach((node: Node) => {
+        const exactConnections = possibleConnections.filter(
+          (pC: any) =>
+            pC.from === node.id || pC.from.split('/').includes(node.id)
+        );
 
-    allNodes.forEach((node: Node) => {
-      const exactConnections = possibleConnections.filter(
-        (pC: any) => pC.from === node.id || pC.from.split('/').includes(node.id)
-      );
+        return exactConnections.forEach((exactConnect) => {
+          if (node.id.includes('.')) {
+            if (exactConnect.from === node.id) {
+              const isTargetVisible = allNodes.find(
+                (n) => n.id === exactConnect.to
+              );
+              const source = node.id;
+              const target = isTargetVisible
+                ? isTargetVisible.id
+                : allNodes.find((n) =>
+                    exactConnect.to.split('/').includes(n.id)
+                  )!!.id;
 
-      return exactConnections.forEach((exactConnect) => {
-        if (node.id.includes('.')) {
-          if (exactConnect.from === node.id) {
-            const isTargetVisible = allNodes.find(
-              (n) => n.id === exactConnect.to
-            );
-            const source = node.id;
-            const target = isTargetVisible
-              ? isTargetVisible.id
-              : allNodes.find((n) =>
-                  exactConnect.to.split('/').includes(n.id)
-                )!!.id;
+              const edgeData: Edge = {
+                id: `${source}~${exactConnect.to}`,
+                source: source,
+                target: target,
+                type: 'floating',
+                markerEnd: {
+                  type: MarkerType.ArrowClosed,
+                },
+              };
 
-            const edgeData = {
-              id: `${source}~${exactConnect.to}`,
-              source: source,
-              target: target,
-              markerEnd: {
-                type: MarkerType.ArrowClosed,
-              },
-            };
-
-            egdesMap.set(edgeData.id, edgeData);
-          }
-        } else {
-          if (exactConnect.from.split('/').includes(node.id)) {
-            const isTargetVisible = allNodes.find(
-              (n) => n.id === exactConnect.to
-            );
-            const source = node.id;
-            const target = isTargetVisible
-              ? isTargetVisible.id
-              : allNodes.find((n) =>
-                  exactConnect.to.split('/').includes(n.id)
-                )!!.id;
-            const edgeData: Edge = {
-              id: `${source}~${target}`,
-              source: source,
-              target: target as string,
-              markerEnd: {
-                type: MarkerType.ArrowClosed,
-              },
-            };
-            if (source !== target) {
               egdesMap.set(edgeData.id, edgeData);
             }
-          }
-        }
-      });
-    });
-
-    let trueEdges: Edge[] = [];
-
-    egdesMap.forEach((value, key, egdesMap) => {
-      trueEdges.push(value);
-    });
-
-    reactFlowInstance.setEdges(trueEdges);
-  };
-
-  const createNewNodes = (parentNode: Node) => {
-    const { dummyWidth } = getChildrenBiggestSize(parentNode);
-    const numOfRow = Math.ceil(Math.sqrt(parentNode.data.children.length));
-    const numOfCol = Math.ceil(Math.sqrt(parentNode.data.children.length));
-
-    let prevNode: any = undefined;
-
-    const newNodes = parentNode.data.children.map((cN: any, index: number) => {
-      const nodeData = {
-        id: cN.name,
-        position: {
-          x: (index % numOfRow) * (dummyWidth + gap) + padding,
-          y:
-            parentNode.height!! +
-            gap +
-            Math.floor(index / numOfCol) * (parentNode.height!! + gap),
-        },
-        type: 'selectorNode',
-        data: !cN.name.includes('.')
-          ? {
-              label: cN.name,
-              children: cN.children ? cN.children : undefined,
-              depth: parentNode.data.depth + 1,
-              isExpand: false,
+          } else {
+            if (exactConnect.from.split('/').includes(node.id)) {
+              const isTargetVisible = allNodes.find(
+                (n) => n.id === exactConnect.to
+              );
+              const source = node.id;
+              const target = isTargetVisible
+                ? isTargetVisible.id
+                : allNodes.find((n) =>
+                    exactConnect.to.split('/').includes(n.id)
+                  )!!.id;
+              const edgeData: Edge = {
+                id: `${source}~${target}`,
+                source: source,
+                target: target as string,
+                type: 'floating',
+                markerEnd: {
+                  type: MarkerType.ArrowClosed,
+                },
+              };
+              if (source !== target) {
+                egdesMap.set(edgeData.id, edgeData);
+              }
             }
-          : {
-              label: cN.name,
-              ...mapData.nodes.find((n: any) => n.source.includes(cN.name)),
-              depth: parentNode.data.depth + 1,
-            },
-        style: {
-          border: '1px solid black',
-          borderRadius: '8px',
-          zIndex: 1000 + parentNode.data.depth + 1,
-        },
-        parentNode: parentNode.id,
+          }
+        });
+      });
 
-        extent: 'parent',
+      let trueEdges: Edge[] = [];
+
+      egdesMap.forEach((value, key, egdesMap) => {
+        trueEdges.push(value);
+      });
+
+      reactFlowInstance.setEdges(trueEdges);
+    },
+    [mapData.edges, nodes, reactFlowInstance]
+  );
+
+  const createNewNodes = useCallback(
+    (parentNode: Node) => {
+      const { dummyWidth } = getChildrenBiggestSize(parentNode);
+      const numOfRow = Math.ceil(Math.sqrt(parentNode.data.children.length));
+      const numOfCol = Math.ceil(Math.sqrt(parentNode.data.children.length));
+
+      let prevNode: any = undefined;
+
+      const newNodes: Node[] = parentNode.data.children.map(
+        (cN: any, index: number) => {
+          const nodeData = {
+            id: cN.name,
+            position: {
+              x: (index % numOfRow) * (dummyWidth + gap) + padding,
+              y:
+                parentNode.height!! +
+                gap +
+                Math.floor(index / numOfCol) * (parentNode.height!! + gap),
+            },
+            type: 'selectorNode',
+            data: !cN.name.includes('.')
+              ? {
+                  label: cN.name,
+                  children: cN.children ? cN.children : undefined,
+                  depth: parentNode.data.depth + 1,
+                  isExpand: false,
+                }
+              : {
+                  label: cN.name,
+                  ...mapData.nodes.find((n: any) => n.source.includes(cN.name)),
+                  depth: parentNode.data.depth + 1,
+                },
+            style: {
+              border: '1px solid black',
+              borderRadius: '8px',
+              zIndex: 1000 + parentNode.data.depth + 1,
+            },
+            parentNode: parentNode.id,
+
+            // extent: 'parent',
+          };
+
+          return nodeData;
+        }
+      );
+      if (!parentNode.id.includes('.')) {
+        createNewEdges(parentNode, newNodes);
+      }
+      reactFlowInstance.addNodes(newNodes);
+    },
+    [createNewEdges, mapData.nodes, reactFlowInstance]
+  );
+
+  const rearangedNode = useCallback(
+    (selectedNode: Node, growingHeight: any, growingWidth: any) => {
+      const passingNode = {
+        ...selectedNode,
+        width: selectedNode.width + growingWidth,
+        height: selectedNode.height + growingHeight,
       };
 
-      return nodeData;
-    });
-    if (!parentNode.id.includes('.')) {
-      createNewEdges(parentNode, newNodes);
-    }
-    reactFlowInstance.addNodes(newNodes);
-  };
+      if (selectedNode.data.depth === 0) {
+        return;
+      }
 
-  const rearangedNode = (
-    selectedNode: Node,
-    growingHeight: any,
-    growingWidth: any
-  ) => {
-    const passingNode = {
-      ...selectedNode,
-      width: selectedNode.width + growingWidth,
-      height: selectedNode.height + growingHeight,
-    };
+      const sameLevelNodes = nodes.filter(
+        (n: Node) => n.data.depth === selectedNode.data.depth
+      );
 
-    if (selectedNode.data.depth === 0) {
-      return;
-    }
+      setNodes((prev) =>
+        prev.map((nds) => {
+          const exactNodes = sameLevelNodes.find(
+            (n) => n.id === nds.id && n.id !== selectedNode.id
+          );
+          if (exactNodes) {
+            const isSameParent = selectedNode.parentNode === nds.parentNode;
+            if (isSameParent) {
+              const trarverseX = nds.position.x + growingWidth;
+              const trarverseY = nds.position.y + growingHeight;
 
-    const sameLevelNodes = nodes.filter(
-      (n: Node) => n.data.depth === selectedNode.data.depth
-    );
+              const sourceLeft = selectedNode.position.x;
+              const targetLeft = nds.position.x;
+              const sourceTop = selectedNode.position.y;
+              const targetTop = nds.position.y;
 
-    setNodes((prev) =>
-      prev.map((nds) => {
-        const exactNodes = sameLevelNodes.find(
-          (n) => n.id === nds.id && n.id !== selectedNode.id
-        );
-        if (exactNodes) {
-          const isSameParent = selectedNode.parentNode === nds.parentNode;
-          if (isSameParent) {
-            const trarverseX = nds.position.x + growingWidth;
-            const trarverseY = nds.position.y + growingHeight;
-
-            const sourceLeft = selectedNode.position.x;
-            const targetLeft = nds.position.x;
-            const sourceTop = selectedNode.position.y;
-            const targetTop = nds.position.y;
-
-            if (targetTop > sourceTop && targetLeft >= sourceLeft) {
-              return {
-                ...nds,
-                position: {
-                  x: targetLeft,
-                  y: trarverseY,
-                },
-              };
-            }
-            if (targetTop === sourceTop && targetLeft > sourceLeft) {
-              return {
-                ...nds,
-                position: {
-                  x: trarverseX,
-                  y: targetTop,
-                },
-              };
-            }
-
-            if (targetTop < sourceTop && targetLeft >= sourceLeft) {
-              const nodeCorners = getFourCornPos(nds);
-              if (nodeCorners.bottomLeft.y >= sourceTop) {
+              if (targetTop > sourceTop && targetLeft >= sourceLeft) {
+                return {
+                  ...nds,
+                  position: {
+                    x: targetLeft,
+                    y: trarverseY,
+                  },
+                };
+              }
+              if (targetTop === sourceTop && targetLeft > sourceLeft) {
                 return {
                   ...nds,
                   position: {
@@ -304,212 +296,292 @@ function Codebase() {
                   },
                 };
               }
-            }
 
-            if (targetTop > sourceTop && targetLeft < sourceLeft) {
-              const nodeCorners = getFourCornPos(passingNode);
-              if (
-                nodeCorners.bottomLeft.y >= targetTop &&
-                nodeCorners.bottomLeft.x < targetLeft + nds.width!!
-              ) {
-                return {
-                  ...nds,
-                  position: {
-                    x: nds.position.x,
-                    y: trarverseY,
-                  },
-                };
+              if (targetTop < sourceTop && targetLeft >= sourceLeft) {
+                const nodeCorners = getFourCornPos(nds);
+                if (nodeCorners.bottomLeft.y >= sourceTop) {
+                  return {
+                    ...nds,
+                    position: {
+                      x: trarverseX,
+                      y: targetTop,
+                    },
+                  };
+                }
               }
+
+              if (targetTop > sourceTop && targetLeft < sourceLeft) {
+                const nodeCorners = getFourCornPos(passingNode);
+                if (
+                  nodeCorners.bottomLeft.y >= targetTop &&
+                  nodeCorners.bottomLeft.x < targetLeft + nds.width!!
+                ) {
+                  return {
+                    ...nds,
+                    position: {
+                      x: nds.position.x,
+                      y: trarverseY,
+                    },
+                  };
+                }
+              }
+              return nds;
             }
             return nds;
           }
           return nds;
-        }
-        return nds;
-      })
-    );
-
-    rearangedNode(
-      nodes.find((n) => n.id === selectedNode.parentNode)!!,
-      growingHeight,
-      growingWidth
-    );
-  };
-
-  const resizeParentNode = (
-    node: Node,
-    parentNode: Node,
-    expandWidth: any,
-    expandHeight: any
-  ) => {
-    // const realWidth = expandWidth - (parentNode.width!! - node.position.x) + 10;
-
-    let rightMost = node;
-
-    const sameLevelNodes = nodes.filter(
-      (n: Node) => n.data.depth === node.data.depth
-    );
-
-    sameLevelNodes.forEach((item) => {
-      if (
-        item.position.y === node.position.y ||
-        Math.abs(item.position.y - node.position.y) < item.width!! ||
-        Math.abs(item.position.y - node.position.y) < node.width!!
-      ) {
-        if (item.position.x > rightMost.position.x) {
-          rightMost = item;
-        }
-      }
-    });
-
-    const realWidth = -(
-      parentNode.width!! -
-      rightMost.position.x -
-      expandWidth -
-      rightMost.width!! -
-      10
-    );
-
-    setNodes((prev) =>
-      prev.map((nds: Node) => {
-        if (nds.id === parentNode.id) {
-          return {
-            ...nds,
-            width: realWidth > 0 ? nds.width!! + realWidth : nds.width,
-            height: nds.height!! + expandHeight,
-            style: {
-              ...nds.style,
-              width: realWidth > 0 ? nds.width!! + realWidth : nds.width!!,
-              height: nds.height!! + expandHeight,
-            },
-          };
-        }
-        return nds;
-      })
-    );
-
-    if (parentNode.data.depth === 0) {
-      return;
-    }
-    const grandParent = nodes.find(
-      (n: Node) => n.id === parentNode.parentNode
-    )!!;
-    if (grandParent) {
-      resizeParentNode(
-        parentNode,
-        grandParent,
-        realWidth + parentNode.width!!,
-        expandHeight
+        })
       );
-    }
-  };
 
-  const expandNode = async (node: Node) => {
-    const { dummyWidth } = getChildrenBiggestSize(node);
-    const numElOnRow = Math.ceil(Math.sqrt(node.data.children.length));
-    const numElOnCol = Math.ceil(node.data.children.length / numElOnRow);
+      rearangedNode(
+        nodes.find((n) => n.id === selectedNode.parentNode)!!,
+        growingHeight,
+        growingWidth
+      );
+    },
+    [nodes, setNodes]
+  );
 
-    const growthHeight = (node.height!! + gap) * (numElOnCol + 1) + padding;
-    const growthWidth =
-      (gap + dummyWidth) * numElOnRow + padding * 3 + iconSize;
-    const parentNode = nodes.find((n: Node) => n.id === node.parentNode)!!;
+  const resizeParentNode = useCallback(
+    (node: Node, parentNode: Node, expandWidth: any, expandHeight: any) => {
+      // const realWidth = expandWidth - (parentNode.width!! - node.position.x) + 10;
 
-    setNodes((prev) =>
-      prev.map((nds) => {
-        if (nds.id === node.id) {
-          return {
-            ...nds,
-            width: growthWidth,
-            height: growthHeight,
-            style: {
-              ...nds.style,
+      let rightMost = node;
 
+      const sameLevelNodes = nodes.filter(
+        (n: Node) => n.data.depth === node.data.depth
+      );
+
+      sameLevelNodes.forEach((item) => {
+        if (
+          item.position.y === node.position.y ||
+          Math.abs(item.position.y - node.position.y) < item.width!! ||
+          Math.abs(item.position.y - node.position.y) < node.width!!
+        ) {
+          if (item.position.x > rightMost.position.x) {
+            rightMost = item;
+          }
+        }
+      });
+
+      const realWidth = -(
+        parentNode.width!! -
+        rightMost.position.x -
+        expandWidth -
+        rightMost.width!! -
+        10
+      );
+
+      setNodes((prev) =>
+        prev.map((nds: Node) => {
+          if (nds.id === parentNode.id) {
+            return {
+              ...nds,
+              width: realWidth > 0 ? nds.width!! + realWidth : nds.width,
+              height: nds.height!! + expandHeight,
+              style: {
+                ...nds.style,
+                width: realWidth > 0 ? nds.width!! + realWidth : nds.width!!,
+                height: nds.height!! + expandHeight,
+              },
+            };
+          }
+          return nds;
+        })
+      );
+
+      if (parentNode.data.depth === 0) {
+        return;
+      }
+      const grandParent = nodes.find(
+        (n: Node) => n.id === parentNode.parentNode
+      )!!;
+      if (grandParent) {
+        resizeParentNode(
+          parentNode,
+          grandParent,
+          realWidth + parentNode.width!!,
+          expandHeight
+        );
+      }
+    },
+    [nodes, setNodes]
+  );
+
+  const expandNode = useCallback(
+    async (node: Node) => {
+      const { dummyWidth } = getChildrenBiggestSize(node);
+      const numElOnRow = Math.ceil(Math.sqrt(node.data.children.length));
+      const numElOnCol = Math.ceil(node.data.children.length / numElOnRow);
+
+      const growthHeight = (node.height!! + gap) * (numElOnCol + 1) + padding;
+      const growthWidth =
+        (gap + dummyWidth) * numElOnRow + padding * 3 + iconSize;
+      const parentNode = nodes.find((n: Node) => n.id === node.parentNode)!!;
+
+      setNodes((prev) =>
+        prev.map((nds) => {
+          if (nds.id === node.id) {
+            return {
+              ...nds,
               width: growthWidth,
               height: growthHeight,
-            },
+              style: {
+                ...nds.style,
 
-            data: {
-              ...nds.data,
-              isExpand: true,
-            },
-          };
-        }
-        return nds;
-      })
-    );
+                width: growthWidth,
+                height: growthHeight,
+              },
 
-    await rearangedNode(
-      node,
-      growthHeight - node.height!!,
-      growthWidth - node.width!!
-    );
-
-    if (parentNode) {
-      resizeParentNode(
-        node,
-        parentNode,
-        growthWidth - node.width!!,
-        growthHeight - node.height!!
+              data: {
+                ...nds.data,
+                isExpand: true,
+              },
+            };
+          }
+          return nds;
+        })
       );
-    }
-  };
 
-  const handleHightLightEdges = (node: Node) => {
-    let incomerEdges = getConnectedEdges([node], edges);
-    if (!node.id.includes('.')) {
-      incomerEdges = getConnectedEdges(getAllChildNodes(node, nodes), edges);
-    }
-    // console.log('Hight light Edges', incomerEdges);
-    setEdges((prev) =>
-      prev.map((edge: Edge) => {
-        const exactEdge = incomerEdges.find((e) => e.id === edge.id);
-        if (exactEdge) {
+      await rearangedNode(
+        node,
+        growthHeight - node.height!!,
+        growthWidth - node.width!!
+      );
+
+      if (parentNode) {
+        resizeParentNode(
+          node,
+          parentNode,
+          growthWidth - node.width!!,
+          growthHeight - node.height!!
+        );
+      }
+    },
+    [nodes, rearangedNode, resizeParentNode, setNodes]
+  );
+
+  const handleHightLightEdges = useCallback(
+    (node: Node) => {
+      let incomerEdges = getConnectedEdges([node], edges);
+      if (!node.id.includes('.')) {
+        incomerEdges = getConnectedEdges(getAllChildNodes(node, nodes), edges);
+      }
+      // console.log('Hight light Edges', incomerEdges);
+      setEdges((prev) =>
+        prev.map((edge: Edge) => {
+          const exactEdge = incomerEdges.find((e) => e.id === edge.id);
+          if (exactEdge) {
+            return {
+              ...exactEdge,
+              style: {
+                ...exactEdge.style,
+                strokeWidth: 1.5,
+                stroke: '#333',
+              },
+              markerEnd: {
+                type: MarkerType.ArrowClosed,
+                color: '#333',
+              },
+            };
+          }
+
           return {
-            ...exactEdge,
-            style: {
-              ...exactEdge.style,
-              strokeWidth: 1.5,
-              stroke: '#333',
-            },
+            ...edge,
             markerEnd: {
               type: MarkerType.ArrowClosed,
-              color: '#333',
+              color: '#33333361',
+            },
+            style: {
+              strokeWidth: 1,
+              stroke: '#33333361',
             },
           };
-        }
+        })
+      );
+    },
+    [edges, nodes, setEdges]
+  );
 
-        return {
-          ...edge,
-          markerEnd: {
-            type: MarkerType.ArrowClosed,
-            color: '#33333361',
-          },
-          style: {
-            strokeWidth: 1,
-            stroke: '#33333361',
-          },
-        };
-      })
-    );
-  };
-
-  const onNodeClick = async (event: any, node: Node) => {
-    console.log('Edges', edges);
-
-    if (node.data.label.includes('.')) {
-      handleHightLightEdges(node);
-    } else {
-      if (!node.data.isExpand) {
-        expandNode(node);
-        createNewNodes(node);
-      } else {
+  const onNodeClick = useCallback(
+    async (event: any, node: Node) => {
+      console.log('Edges', edges);
+      const { clientX, clientY } = event;
+      console.log(clientX, clientY);
+      if (node.data.label.includes('.')) {
         handleHightLightEdges(node);
+      } else {
+        if (!node.data.isExpand) {
+          expandNode(node);
+          createNewNodes(node);
+        } else {
+          handleHightLightEdges(node);
+        }
       }
-    }
-  };
+    },
+    [createNewNodes, edges, expandNode, handleHightLightEdges]
+  );
 
   /** *************Drag Event********** */
-  const handleNodeDrag = () => {};
+  const handleChangeSize = useCallback(
+    (node: Node, dx: number, dy: number) => {
+      setNodes((prev) =>
+        prev.map((n: Node) =>
+          n.id === node.id
+            ? {
+                ...node,
+                width: node.width!! + Math.abs(dx),
+                height: node.height!! + Math.abs(dy),
+                style: {
+                  ...node.style,
+                  width: node.width!! + Math.abs(dx),
+                  height: node.height!! + Math.abs(dy),
+                },
+                position: {
+                  x: dx < 0 ? node.position.x + dx : node.position.x,
+                  y: dy < 0 ? node.position.y + dy : node.position.y,
+                },
+              }
+            : n
+        )
+      );
+    },
+    [setNodes]
+  );
+
+  const handleNodeDrag = useCallback(
+    (event: any, node: Node) => {
+      const nodeRight = node.position.x + node.width!!;
+      const nodeLeft = node.position.x;
+      const nodeTop = node.position.y;
+      const nodeBottom = node.position.y + node.height!!;
+
+      const parentNode = nodes.find((n: Node) => n.id === node.parentNode);
+
+      if (parentNode) {
+        let dx = 0;
+        let dy = 0;
+
+        if (nodeRight > parentNode.width!!) {
+          dx = nodeRight - parentNode.width!!;
+        }
+
+        if (nodeBottom > parentNode.height!!) {
+          dy = nodeBottom - parentNode.height!!;
+        }
+
+        if (nodeLeft < 0) {
+          dx = nodeLeft;
+        }
+
+        if (nodeTop < 0) {
+          dy = nodeTop;
+        }
+        handleChangeSize(parentNode, dx, dy);
+      }
+    },
+    [handleChangeSize, nodes]
+  );
 
   /**     *******Services*********      */
   const handleGetWorkflow = async ({
@@ -539,38 +611,38 @@ function Codebase() {
     return workflow;
   };
 
-  const handleTrackingWorkflow = async () => {
-    if (domain) {
-      try {
-        const owner = domain.repository.split('/')[0];
-        const repository = domain.repository.split('/')[1];
-        const res = await retrieveWorkflows({
-          owner,
-          repository,
-          githubToken: user.githubToken,
-        });
-        setWorkflowRunning(true);
+  // const handleTrackingWorkflow = async () => {
+  //   if (domain) {
+  //     try {
+  //       const owner = domain.repository.split('/')[0];
+  //       const repository = domain.repository.split('/')[1];
+  //       const res = await retrieveWorkflows({
+  //         owner,
+  //         repository,
+  //         githubToken: user.githubToken,
+  //       });
+  //       setWorkflowRunning(true);
 
-        const { workflow_runs } = res;
-        const in_progress_workflows = workflow_runs.filter(
-          (workflow_run: any) => workflow_run.status !== 'completed'
-        );
+  //       const { workflow_runs } = res;
+  //       const in_progress_workflows = workflow_runs.filter(
+  //         (workflow_run: any) => workflow_run.status !== 'completed'
+  //       );
 
-        if (in_progress_workflows.length > 0) {
-          const workflow = await handleGetWorkflow({
-            owner,
-            repository,
-            githubToken: user.githubToken,
-            workflowId: in_progress_workflows[0].id,
-          });
-          if (workflow.status === 'completed') setWorkflowRunning(false);
-        }
-        setWorkflowRunning(false);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
+  //       if (in_progress_workflows.length > 0) {
+  //         const workflow = await handleGetWorkflow({
+  //           owner,
+  //           repository,
+  //           githubToken: user.githubToken,
+  //           workflowId: in_progress_workflows[0].id,
+  //         });
+  //         if (workflow.status === 'completed') setWorkflowRunning(false);
+  //       }
+  //       setWorkflowRunning(false);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  // };
 
   const handleRunWorkflow = async () => {
     try {

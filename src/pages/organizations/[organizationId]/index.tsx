@@ -75,7 +75,7 @@ const OrganizationDetail = () => {
           </ul>
         </section>
       </div>
-      <aside className=' lg:w-96'></aside>
+      <aside className='md:w-0 lg:w-96'></aside>
     </>
   );
 };
@@ -86,7 +86,7 @@ OrganizationDetail.getLayout = function getLayout(page: any) {
   return (
     <PrivateRoute>
       <Layout>
-        <main className='flex-grow flex bg-[#f5f5f5]'>
+        <main className='flex-grow flex bg-[#f5f5f5] relative'>
           <Sidebar />
           {page}
         </main>

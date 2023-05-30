@@ -24,7 +24,7 @@ const ActionBar = ({ explorer }: any) => {
     const handleMouseMove = (event: any) => {
       if (dragging) {
         const deltaX = event.clientX - startX;
-        const newWidth = width + deltaX;
+        const newWidth = width + deltaX * 1.5;
         const clampedWidth = Math.min(Math.max(newWidth, 400), 1000); // Limit the width within the range
         setWidth(clampedWidth);
         setStartX(event.clientX);

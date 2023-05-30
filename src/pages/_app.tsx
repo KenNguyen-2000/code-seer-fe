@@ -39,7 +39,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         </Providers>
       </ReactFlowProvider>
 
-      <Script
+      {/* <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
         strategy='afterInteractive'
       />
@@ -51,7 +51,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     
       gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}');
     `}
-      </Script>
+      </Script> */}
       <Analytics />
     </>
   );

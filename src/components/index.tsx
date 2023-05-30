@@ -19,6 +19,7 @@ import LoadingWorkFlow from './page_components/DomainDetail/LoadingWorkFlow';
 import withPrivateRoute from './Layout/withPrivateRoute';
 import Loader from './common/Loader';
 import GoogleScript from './common/GoogleScript';
+import OrganizationLoader from './page_components/Organizations/OrganizationLoader';
 
 export {
   ButtonOutline,
@@ -42,4 +43,5 @@ export {
   Sidebar,
   Loader,
   GoogleScript,
+  OrganizationLoader,
 };

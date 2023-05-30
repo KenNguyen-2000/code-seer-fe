@@ -6,8 +6,8 @@ import {
   IResult,
 } from './helpers.interface';
 
-const padding = 10;
-const gap = 10;
+const padding = 20;
+const gap = 25;
 const iconSize = 24;
 
 export function getChildrenBiggestSize(node: Node) {

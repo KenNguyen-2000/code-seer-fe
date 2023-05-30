@@ -1,6 +1,11 @@
 'use client';
 
-import { CreateOrgForm, Layout, OrganizationCard } from '@/components';
+import {
+  CreateOrgForm,
+  Layout,
+  OrganizationCard,
+  OrganizationLoader,
+} from '@/components';
 import React, { useState } from 'react';
 import styles from './organizations.module.scss';
 import useSWR from 'swr';
@@ -51,14 +56,17 @@ const OrganizationList = () => {
           </a>
         </div>
 
-        <div className='flex md:flex-wrap flex-col md:flex-row gap-8 min-h-[150px]'>
-          {data &&
-            data.data.map((organization: any) => (
-              <OrganizationCard
-                key={organization.id}
-                organization={organization.organization}
-              />
-            ))}
+        <div className='flex flex-wrap md:flex-nowrap flex-col md:flex-row gap-8 min-h-[150px] '>
+          {!isLoading
+            ? data?.data?.map((organization: any) => (
+                <OrganizationCard
+                  key={organization.id}
+                  organization={organization.organization}
+                />
+              ))
+            : new Array(3)
+                .fill('')
+                .map((item, index) => <OrganizationLoader key={index} />)}
         </div>
       </section>
       <section>

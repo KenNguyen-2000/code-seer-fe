@@ -1,5 +1,6 @@
 'use client';
 
+import ButtonFilled from '@/components/common/ButtonFilled';
 import { ChevronDown, CloseIcon } from '@/components/icons';
 import { createNewTeam, teamEndpoint } from '@/services/team.service';
 import React, { useRef, useState } from 'react';
@@ -170,12 +171,9 @@ const CreateTeamForm = ({ setIsShown, orgId, mutate, teams }: any) => {
           </div>
         </div>
         <div className='p-6 border-t border-md_blue w-full flex justify-end'>
-          <button
-            type='submit'
-            className='bg-md_blue text-white font-semibold px-6 py-2 rounded-md'
-          >
+          <ButtonFilled type='submit' className='rounded-md'>
             Create
-          </button>
+          </ButtonFilled>
         </div>
       </form>
     </section>
