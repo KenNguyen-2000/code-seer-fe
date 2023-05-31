@@ -20,6 +20,8 @@ import ClipboardText from './ClipboardText';
 import TagIcon from './TagIcon';
 import CloseIcon from './CloseIcon';
 import TypescriptFileIcon from './TypescriptFileIcon';
+import MessageIcon from './MessageIcon';
+import BrandSafariIcon from './BrandSafariIcon';
 
 export {
   BellFilledIcon,
@@ -44,4 +46,6 @@ export {
   TagIcon,
   CloseIcon,
   TypescriptFileIcon,
+  MessageIcon,
+  BrandSafariIcon,
 };

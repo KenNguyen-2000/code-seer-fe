@@ -5,6 +5,7 @@ import {
   INodePayload,
   IResult,
 } from './helpers.interface';
+import { INodeComment, INodeLabel } from '@/interfaces';
 
 const padding = 20;
 const gap = 25;
@@ -159,19 +160,42 @@ export const generateTemp = (data: IMainData, temp: any[], final: any) => {
             (e: any) => e.from === arr.join('/')
           );
 
-          obj.children = otherChild.map((oC: any) => ({
-            name: oC.to,
-            data: data.nodes.find((n: any) => n.source === oC.to),
-          }));
+          obj.children = otherChild.map((oC: any) => {
+            const tempData = {
+              name: oC.to,
+              data: data.nodes.find((n: any) => n.source === oC.to),
+              labelData: data.nodes.find(
+                (item: any) =>
+                  item.labelData && item.labelData.nodeId === obj.name
+              )?.labelData,
+              commentData: data.nodes.find(
+                (item: any) =>
+                  item.commentData && item.commentData.nodeId === obj.name
+              )?.commentData,
+            };
+
+            return tempData;
+          });
         }
 
         if (obj.name.includes('.')) {
           obj.name = arr.join('/');
-          obj.data = data.nodes.find(
+          const tempData = data.nodes.find(
             (item: any) =>
               item.source.split('/')[item.source.split('/').length - 1] ===
               obj.name
           );
+          obj.data = {
+            ...tempData,
+            labelData: data.nodes.find(
+              (item: any) =>
+                item.labelData && item.labelData.nodeId === obj.name
+            )?.labelData,
+            commentData: data.nodes.find(
+              (item: any) =>
+                item.commentData && item.commentData.nodeId === obj.name
+            )?.commentData,
+          };
         }
 
         r.result.push(obj);
@@ -256,17 +280,19 @@ export const generateInitialNodes = (
           label: item.name,
           children: item.children ? item.children : undefined,
           depth: 0,
+          labelData: mainData.nodes.find(
+            (n: INodePayload) => n.source === item.name
+          )?.labelData,
         }
       : {
           label: item.name,
           children: item.children ? item.children : undefined,
           ...mainData.nodes.find((n: INodePayload) => n.source === item.name),
           depth: 0,
+          labelData: mainData.nodes.find(
+            (n: INodePayload) => n.source === item.name
+          )?.labelData,
         },
-    style: {
-      border: '1px solid black',
-      borderRadius: '8px',
-    },
   }));
 
 export const generateInitialEdges = (
@@ -286,11 +312,24 @@ export const generateInitialEdges = (
     }));
 
 export const generateInitSetup = (data: any) => {
+  // console.log('Initial data', data);
   const nodeAr: INodePayload[] = data.modules.map((module: any) => ({
     source: module.source,
     orphan: module.orphan,
     valid: module.valid,
+    labelData: data.labels
+      ? data.labels[1].find(
+          (label: INodeLabel) => label.nodeId === module.source
+        )
+      : null,
+    commentData: data.comments
+      ? data.comments.find(
+          (comment: INodeComment) => comment.nodeId === module.source
+        )
+      : null,
   }));
+
+  // console.log('Initial setup', nodeAr);
 
   const edgeAr: IEdgePayload[] = data.modules
     .map((module: any) => {
@@ -354,7 +393,6 @@ export function getAllChildNodes(node: Node, nodes: Node[]) {
   //       getAllChildNodes(cN, nodes, [...list, ...childNodes]);
   //   });
   // }
-  console.log(nodes);
 
   const chilren: Node[] = [];
   const findChildren = (currentNode: Node, parentNode: Node) => {

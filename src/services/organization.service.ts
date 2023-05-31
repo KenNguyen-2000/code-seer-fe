@@ -17,7 +17,7 @@ export const retrieveOrganizations = async (): Promise<AxiosResponse> => {
 export const retrieveAnOrganization = async (key: string) => {
   const res = await interceptor.get(key);
 
-  return res.data.data;
+  return res.data;
 };
 
 export const createNewOrganization = async (

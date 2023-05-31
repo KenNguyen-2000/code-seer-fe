@@ -27,3 +27,11 @@ html {
   }
   scroll-behavior: smooth;
 }
+
+.react-flow__node {
+  border-radius: 8px;
+  border: 1px solid black;
+}
+
+.react-flow__edge {
+}

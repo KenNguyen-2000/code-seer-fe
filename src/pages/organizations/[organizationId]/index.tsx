@@ -5,37 +5,21 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import MapVersion from '/public/map-version.png';
 import Image from 'next/image';
-import useSWR from 'swr';
-import {
-  organizationEndpoint,
-  retrieveAnOrganization,
-} from '@/services/organization.service';
 import PrivateRoute from '@/components/common/PrivateRoute';
 import { useAppDispatch } from '@/redux/reduxHooks';
-import { setOrganization } from '@/redux/slices/organizationSlice';
 import { setDependencyMaps } from '@/redux/slices/domainSlice';
+import { fetchAnOrganization } from '@/redux/thunks/organization.thunk';
 
 const OrganizationDetail = () => {
   const router = useRouter();
   const { organizationId } = router.query;
-  const {
-    data: organization,
-    error: orgErr,
-    isLoading: isOrgLoading,
-  } = useSWR(
-    organizationId ? `${organizationEndpoint}/${organizationId}` : null,
-    retrieveAnOrganization
-  );
 
   const dispatch = useAppDispatch();
 
-  if (organization) dispatch(setOrganization(organization));
-
-  // if (isOrgLoading) return <h1>Loading</h1>;
-
   useEffect(() => {
     dispatch(setDependencyMaps([]));
-  }, [dispatch]);
+    dispatch(fetchAnOrganization(organizationId as string));
+  }, [dispatch, organizationId]);
 
   return (
     <>

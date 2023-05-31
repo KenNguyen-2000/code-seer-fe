@@ -14,9 +14,6 @@ export default function Home() {
   const handleShowMenu = () => {
     if (menuListRef.current !== null) {
       menuListRef.current.classList.toggle('max-h-0');
-      console.log(
-        menuListRef.current.firstElementChild?.classList.add('hidden')
-      );
     }
   };
 

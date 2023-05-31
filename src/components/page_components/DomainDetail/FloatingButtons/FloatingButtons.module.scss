@@ -1,0 +1,71 @@
+@import '@/utils/sass/baseColor.scss';
+
+.wrapper {
+  border: 1px solid $light_gray;
+  border-radius: 6px;
+  background-color: #fff;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  display: flex;
+  flex-direction: row;
+  padding: 0.25rem 0.5rem;
+}
+
+.action__list {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-items: center;
+  list-style-type: none;
+}
+
+.action__list__item {
+  padding: 4px;
+  border-radius: 6px;
+  &:hover {
+    background-color: rgb(224, 222, 247);
+  }
+}
+
+.labels__wrapper {
+  background: rgb(255, 255, 255);
+  border-radius: 4px;
+  position: absolute;
+  box-shadow: rgba(2, 20, 67, 0.12) 0px 4px 20px;
+  line-height: 26px;
+  padding: 8px 0px;
+  width: max-content;
+  min-width: 125px;
+  z-index: 10017;
+  top: 3rem;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.labels__title {
+  padding: 0.5rem 1rem;
+}
+
+.labels__item__btn {
+  background: rgb(255, 255, 255);
+  border: 0px;
+  display: block;
+  padding: 5px 15px;
+  line-height: 26px;
+  margin: 0px;
+  cursor: pointer;
+  color: rgb(2, 20, 67);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-align: left;
+  width: 100%;
+  &:hover {
+    background: rgb(231, 229, 242);
+    color: rgb(42, 13, 104);
+  }
+}

@@ -14,6 +14,7 @@ import {
   Node,
   NodeDragHandler,
   NodeTypes,
+  Panel,
   ReactFlow,
   useEdgesState,
   useNodesState,
@@ -27,6 +28,7 @@ import {
   FloatingConnectionLine,
   FloatingEdge,
   ButtonOutline,
+  FloatingButtons,
 } from '@/components';
 import './dependency-map.module.scss';
 import {
@@ -36,6 +38,7 @@ import {
 } from '@/components/icons';
 import { useRouter } from 'next/router';
 import {
+  retrieveADomain,
   retrieveMaps,
   retrieveWorkflowById,
   retrieveWorkflows,
@@ -52,12 +55,18 @@ import { IMainData } from '@/utils/code-maps/helpers.interface';
 import PrivateRoute from '@/components/common/PrivateRoute';
 import { useAppDispatch, useAppSelector } from '@/redux/reduxHooks';
 import { toast } from 'react-toastify';
-import { setDependencyMaps } from '@/redux/slices/domainSlice';
+import { setDependencyMaps, setDomain } from '@/redux/slices/domainSlice';
 import { IDomain, IWorkflow } from '@/interfaces/domain.interface';
-import { IOrganization } from '@/interfaces';
+import { IDependencyMap, IOrganization } from '@/interfaces';
 import useUser from '@/hooks/useUser';
 import Link from 'next/link';
 import Script from 'next/script';
+import { setSelectedNode } from '@/redux/slices/nodeSlice';
+import { setCurMap, setLabels, setNodeLabels } from '@/redux/slices/mapSlice';
+import { retrieveAnOrganization } from '@/services/organization.service';
+import { setOrganization } from '@/redux/slices/organizationSlice';
+import { fetchDepMaps } from '@/redux/thunks/map.thunk';
+import { fetchAnOrganization } from '@/redux/thunks/organization.thunk';
 
 const padding = 20;
 const gap = 25;
@@ -65,7 +74,7 @@ const iconSize = 24;
 
 function Codebase() {
   const router = useRouter();
-  const { domainId } = router.query;
+  const { domainId, organizationId } = router.query;
 
   const dispatch = useAppDispatch();
   const domain: IDomain | undefined = useAppSelector(
@@ -74,14 +83,25 @@ function Codebase() {
   const organization: IOrganization | undefined = useAppSelector(
     (state) => state.organizationSlice.organization
   );
-
-  const user: any = useUser();
+  const selectedNode: Node | undefined = useAppSelector(
+    (state) => state.nodeSlice.selectedNode
+  );
+  const curMap: IDependencyMap | undefined = useAppSelector(
+    (state) => state.mapSlice.map
+  );
 
   const [mapData, setMapData] = useState<IMainData>({ nodes: [], edges: [] });
   const [explorer, setExplorer] = useState<any[]>([]);
   const [depMaps, setDepMaps] = useState([]);
   const [workflowRunning, setWorkflowRunning] = useState(false);
   const [showRedirect, setShowRedirect] = useState(false);
+  const [floatingBtns, setFloatingBtns] = useState({
+    isShown: false,
+    position: {
+      x: 0,
+      y: 0,
+    },
+  });
 
   const nodeTypes: NodeTypes = useMemo(
     () => ({
@@ -203,6 +223,7 @@ function Codebase() {
 
       const newNodes: Node[] = parentNode.data.children.map(
         (cN: any, index: number) => {
+          console.log(cN);
           const nodeData = {
             id: cN.name,
             position: {
@@ -226,9 +247,12 @@ function Codebase() {
                   depth: parentNode.data.depth + 1,
                 },
             style: {
-              border: '1px solid black',
-              borderRadius: '8px',
-              zIndex: 1000 + parentNode.data.depth + 1,
+              zIndex: 1000 + (parentNode.data.depth + 1) * 100 - index,
+              background: cN.data
+                ? cN.data.labelData
+                  ? cN.data.labelData.color
+                  : ''
+                : '',
             },
             parentNode: parentNode.id,
 
@@ -467,7 +491,6 @@ function Codebase() {
       if (!node.id.includes('.')) {
         incomerEdges = getConnectedEdges(getAllChildNodes(node, nodes), edges);
       }
-      // console.log('Hight light Edges', incomerEdges);
       setEdges((prev) =>
         prev.map((edge: Edge) => {
           const exactEdge = incomerEdges.find((e) => e.id === edge.id);
@@ -505,11 +528,17 @@ function Codebase() {
 
   const onNodeClick = useCallback(
     async (event: any, node: Node) => {
-      console.log('Edges', edges);
-      const { clientX, clientY } = event;
-      console.log(clientX, clientY);
+      const { pageX, pageY, clientX, clientY } = event;
+      dispatch(setSelectedNode(node));
       if (node.data.label.includes('.')) {
         handleHightLightEdges(node);
+        setFloatingBtns({
+          isShown: true,
+          position: {
+            x: clientX,
+            y: clientY,
+          },
+        });
       } else {
         if (!node.data.isExpand) {
           expandNode(node);
@@ -519,7 +548,7 @@ function Codebase() {
         }
       }
     },
-    [createNewNodes, edges, expandNode, handleHightLightEdges]
+    [createNewNodes, dispatch, expandNode, handleHightLightEdges]
   );
 
   /** *************Drag Event********** */
@@ -646,10 +675,9 @@ function Codebase() {
 
   const handleRunWorkflow = async () => {
     try {
-      const owner = domain?.repository.split('/')[0] as string;
-      const repository = domain?.repository.split('/')[1] as string;
+      const owner = domain?.domain.repository.split('/')[0] as string;
+      const repository = domain?.domain.repository.split('/')[1] as string;
       const res = await runWorkflow({ owner, repository });
-      console.log(res);
       if (res.success) {
         toast.success('Run workflow success');
         setShowRedirect(true);
@@ -662,12 +690,19 @@ function Codebase() {
   useEffect(() => {
     const fetchMaps = async () => {
       try {
-        const res = await retrieveMaps(domainId as string);
-        dispatch(setDependencyMaps(res.data));
-        setDepMaps(res.data);
-        if (res.data.length > 0) {
+        // const res = await retrieveMaps(domainId as string);
+        const res = await dispatch(fetchDepMaps(domainId as string)).unwrap();
+        console.log('Unwrap', res);
+        const resDomain = await retrieveADomain(domainId as string);
+        if (!organization)
+          dispatch(fetchAnOrganization(organizationId as string));
+        dispatch(setDomain(resDomain.data));
+        dispatch(setDependencyMaps(res));
+        setDepMaps(res);
+        console.log(JSON.parse(res[0].payload));
+        if (res.length > 0) {
           const { initialNodes, initialEdges, explorer, mainData } =
-            generateInitSetup(JSON.parse(res.data[0].payload));
+            generateInitSetup(JSON.parse(res[0].payload));
 
           setNodes(initialNodes);
           setEdges(initialEdges);
@@ -679,7 +714,7 @@ function Codebase() {
       }
     };
     if (domainId) fetchMaps();
-  }, [dispatch, domainId, setEdges, setNodes]);
+  }, [dispatch, domainId, organization, organizationId, setEdges, setNodes]);
 
   if (workflowRunning)
     return (
@@ -696,17 +731,15 @@ function Codebase() {
         <div className='px-7 py-6 flex justify-between bg-[#F7F8FA] border-b-2 border-[#E3E3E3] drop-shadow-md'>
           <div className='flex gap-3 text-lg font-semibold'>
             <span className='text-md_blue'>
-              {organization ? organization.organization.name : 'Organization'}
+              {organization ? organization?.organization?.name : 'Organization'}
             </span>
             <ChevronRight className='text-md_blue' />
             <span className='text-primary_gray'>
-              {domain ? domain.name : 'Domain Name'}
+              {domain ? domain.domain.name : 'Domain Name'}
             </span>
             <ChevronRight className='text-md_blue' />
             <span className='text-primary_blue'>
-              {domain
-                ? domain.repository
-                : 'Kennguyen2000/facebook-instagram-mobile'}
+              {domain ? domain.domain.repository : 'Repository'}
             </span>
           </div>
           <ClipboardText className='text-dark_blue_2 cursor-pointer' />
@@ -718,9 +751,9 @@ function Codebase() {
             </ButtonOutline>
             {showRedirect && (
               <Link
-                href={`https://github.com/${domain?.repository.split('/')[0]}/${
-                  domain?.repository.split('/')[1]
-                }/actions`}
+                href={`https://github.com/${
+                  domain?.domain.repository.split('/')[0]
+                }/${domain?.domain.repository.split('/')[1]}/actions`}
                 className='hover:underline py-2'
               >
                 View workflow progress
@@ -729,7 +762,9 @@ function Codebase() {
           </div>
         ) : (
           <div className='flex grow w-full h-screen relative'>
-            <FloatingActionBar />
+            {selectedNode && curMap ? (
+              <FloatingActionBar selectedNode={selectedNode} />
+            ) : null}
             <ReactFlow
               nodes={nodes}
               edges={edges}

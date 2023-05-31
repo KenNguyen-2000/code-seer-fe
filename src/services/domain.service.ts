@@ -15,6 +15,12 @@ export const retrieveDomains = async () => {
   return res.data;
 };
 
+export const retrieveADomain = async (domainId: string) => {
+  const res = await interceptor.get(`/domains/${domainId}`);
+
+  return res.data;
+};
+
 export const retrieveMaps = async (domainId: string) => {
   const res = await interceptor.get(`/domains/${domainId}/maps`);
 

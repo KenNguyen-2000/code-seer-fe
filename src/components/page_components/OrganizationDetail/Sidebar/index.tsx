@@ -19,15 +19,12 @@ import { IDomain } from '@/interfaces/domain.interface';
 import CreateTeamForm from '../CreateTeamForm';
 import CreateDomainForm from '../CreateDomainForm';
 import { useAppDispatch, useAppSelector } from '@/redux/reduxHooks';
-import { setDomain } from '@/redux/slices/domainSlice';
 import ButtonFilled from '@/components/common/ButtonFilled';
 import { toast } from 'react-toastify';
 import Loader from '@/components/common/Loader';
 
 const Sidebar = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const domain = useAppSelector((state) => state.domain.domain);
   const { organizationId } = router.query;
 
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -71,10 +68,7 @@ const Sidebar = () => {
       if (isCollapsed && this.window.innerWidth > 768) setIsCollapsed(false);
     });
 
-    return () =>
-      window.removeEventListener('resize', function (e) {
-        console.log(e);
-      });
+    return () => window.removeEventListener('resize', function (e) {});
   }, [isCollapsed]);
 
   return (
@@ -162,12 +156,11 @@ const Sidebar = () => {
                     <li className='text-md_gray' key={domain.id}>
                       <button
                         className='w-fit hover:underline hover:font-semibold hover:text-dark_blue'
-                        onClick={() => {
-                          dispatch(setDomain(domain));
+                        onClick={() =>
                           router.push(
                             `/organizations/${organizationId}/${domain.id}`
-                          );
-                        }}
+                          )
+                        }
                       >
                         {domain.name}
                       </button>

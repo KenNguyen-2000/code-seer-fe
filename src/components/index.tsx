@@ -20,6 +20,7 @@ import withPrivateRoute from './Layout/withPrivateRoute';
 import Loader from './common/Loader';
 import GoogleScript from './common/GoogleScript';
 import OrganizationLoader from './page_components/Organizations/OrganizationLoader';
+import FloatingButtons from './page_components/DomainDetail/FloatingButtons';
 
 export {
   ButtonOutline,
@@ -44,4 +45,5 @@ export {
   Loader,
   GoogleScript,
   OrganizationLoader,
+  FloatingButtons,
 };

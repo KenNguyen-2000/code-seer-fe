@@ -1,9 +1,18 @@
-import { IDependency } from '@/interfaces/dependency-map.interface';
+import { IComment, IDependency } from '@/interfaces/dependency-map.interface';
 
 export interface INodePayload {
   source: string;
   orphan: boolean;
   valid: boolean;
+  labelData?: {
+    id: string;
+    color: string;
+    name: string;
+  };
+  commentData?: {
+    nodeId: string;
+    comments: IComment[];
+  };
 }
 
 export interface IEdgePayload extends IDependency {
