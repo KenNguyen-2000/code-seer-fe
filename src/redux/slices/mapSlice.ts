@@ -102,7 +102,7 @@ const mapSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchDepMaps.fulfilled, (state, action) => {
       console.log('Thunk', action.payload);
-      if (action.payload.length > 0) {
+      if (action.payload && action.payload.length > 0) {
         const data = JSON.parse(action.payload[0].payload);
         console.log('Thunk data', data);
         if (data.labels) {

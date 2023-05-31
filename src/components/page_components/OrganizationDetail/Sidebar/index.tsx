@@ -152,7 +152,7 @@ const Sidebar = () => {
                 {isDomainsLoading ? (
                   <Loader width='40px' height='40px' borderWidth='6px' />
                 ) : (
-                  domains?.data?.map((domain: IDomain) => (
+                  domains?.data?.map((domain: any) => (
                     <li className='text-md_gray' key={domain.id}>
                       <button
                         className='w-fit hover:underline hover:font-semibold hover:text-dark_blue'
