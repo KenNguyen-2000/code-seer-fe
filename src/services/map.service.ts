@@ -36,3 +36,11 @@ export const updateMapComments = async (
   }
   return res.data;
 };
+
+export const retrieveMapById = async (mapId: string) => {
+  const res = await interceptor.get(`${mapEndpoint}/${mapId}`);
+
+  toast.success(`Get map by id success`);
+
+  return res.data;
+};

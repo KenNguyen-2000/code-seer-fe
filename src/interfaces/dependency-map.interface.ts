@@ -1,20 +1,22 @@
 export interface IDependencyMap {
   id: string;
   type: string;
-  payload: {
-    modules: [];
-    summary: {
-      error: number;
-      ignore: number;
-      info: number;
-      totalCruised: number;
-      totalDependenciesCruised: number;
-      warn: number;
-    };
-  };
+  // payload: {
+  //   modules: [];
+  //   summary: {
+  //     error: number;
+  //     ignore: number;
+  //     info: number;
+  //     totalCruised: number;
+  //     totalDependenciesCruised: number;
+  //     warn: number;
+  //   };
+  // };
+  payload: string;
   createdAt?: string;
   updatedAt?: string;
   domainId?: string;
+  version: string;
 }
 
 export interface IModule {

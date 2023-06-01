@@ -32,6 +32,8 @@ html {
   border-radius: 8px;
   border: 1px solid black;
 }
-
-.react-flow__edge {
+.react-flow__background {
+  rect {
+    visibility: hidden;
+  }
 }

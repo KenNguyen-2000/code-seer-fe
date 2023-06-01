@@ -13,8 +13,6 @@ export const fetchAnOrganization = createAsyncThunk(
         `${organizationEndpoint}/${organizationId}`
       );
 
-      console.log('Thunk request', res);
-
       return res.data;
     } catch (error) {}
   }

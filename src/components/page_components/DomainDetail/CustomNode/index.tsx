@@ -6,6 +6,12 @@ import FloatingButtons from '../FloatingButtons';
 function CustomNode(props: NodeProps) {
   const { data, isConnectable, selected } = props;
 
+  const handleCollapseNode = () => {
+    if (data.isExpand) {
+      console.log('Collapse');
+    }
+  };
+
   return (
     <div className='w-fit  text-black px-[10px] rounded-lg '>
       {/* <NodeResizer minWidth={160} minHeight={30} /> */}
@@ -16,7 +22,10 @@ function CustomNode(props: NodeProps) {
         onConnect={(params: any) => console.log('handle onConnect', params)}
         isConnectable={isConnectable}
       />
-      <div className='flex flex-col w-fit h-fit cursor-pointer'>
+      <div
+        className='flex flex-col w-fit h-fit cursor-pointer'
+        onClick={handleCollapseNode}
+      >
         <div className='label flex items-center justify-center text-black relative z-[3000]'>
           {data.label.includes('.') ? (
             <span className='flex items-center'>

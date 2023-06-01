@@ -1,7 +1,7 @@
 import { IMapLabel, INodeComment, INodeLabel } from '@/interfaces';
-import { updateMapComments } from '@/services/map.service';
+import { retrieveMapById, updateMapComments } from '@/services/map.service';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { FETCH_MAP } from '../constants';
+import { FETCH_MAP, FETCH_MAP_BY_ID } from '../constants';
 import { retrieveMaps } from '@/services/domain.service';
 
 interface IAddCommentOnNode {
@@ -27,5 +27,17 @@ export const fetchDepMaps = createAsyncThunk(
 
       return res.data;
     } catch (error) {}
+  }
+);
+
+export const fetchMapById = createAsyncThunk(
+  FETCH_MAP_BY_ID,
+  async (mapId: string, thunkApi) => {
+    try {
+      const res = await retrieveMapById(mapId);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );

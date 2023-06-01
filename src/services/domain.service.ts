@@ -11,7 +11,6 @@ export const domainEndpoint = '/domains';
 
 export const retrieveDomains = async () => {
   const res = await interceptor.get('/domains');
-  console.log(res.data);
   return res.data;
 };
 

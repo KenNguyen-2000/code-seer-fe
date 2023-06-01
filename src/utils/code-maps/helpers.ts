@@ -268,32 +268,39 @@ export const generateInitialNodes = (
   result: IResult[],
   mainData: IMainData
 ): Node[] =>
-  result.map((item: IResult, index: number) => ({
-    id: item.name,
-    position: {
-      x: 0,
-      y: index * 20,
-    },
-    type: 'selectorNode',
-    data: !item.name.includes('.')
-      ? {
-          label: item.name,
-          children: item.children ? item.children : undefined,
-          depth: 0,
-          labelData: mainData.nodes.find(
-            (n: INodePayload) => n.source === item.name
-          )?.labelData,
-        }
-      : {
-          label: item.name,
-          children: item.children ? item.children : undefined,
-          ...mainData.nodes.find((n: INodePayload) => n.source === item.name),
-          depth: 0,
-          labelData: mainData.nodes.find(
-            (n: INodePayload) => n.source === item.name
-          )?.labelData,
-        },
-  }));
+  result.map((item: IResult, index: number) => {
+    const labelData = mainData.nodes.find(
+      (n: INodePayload) => n.source === item.name
+    )?.labelData;
+
+    return {
+      id: item.name,
+      position: {
+        x: 0,
+        y: index * 20,
+      },
+      type: 'selectorNode',
+      data: !item.name.includes('.')
+        ? {
+            label: item.name,
+            children: item.children ? item.children : undefined,
+            depth: 0,
+            labelData: mainData.nodes.find(
+              (n: INodePayload) => n.source === item.name
+            )?.labelData,
+          }
+        : {
+            label: item.name,
+            children: item.children ? item.children : undefined,
+            ...mainData.nodes.find((n: INodePayload) => n.source === item.name),
+            depth: 0,
+            labelData: labelData,
+          },
+      style: {
+        background: labelData ? labelData.color : 'rgba(255,255,255,0.6)',
+      },
+    };
+  });
 
 export const generateInitialEdges = (
   result: IResult[],
@@ -312,7 +319,6 @@ export const generateInitialEdges = (
     }));
 
 export const generateInitSetup = (data: any) => {
-  // console.log('Initial data', data);
   const nodeAr: INodePayload[] = data.modules.map((module: any) => ({
     source: module.source,
     orphan: module.orphan,
@@ -328,8 +334,6 @@ export const generateInitSetup = (data: any) => {
         )
       : null,
   }));
-
-  // console.log('Initial setup', nodeAr);
 
   const edgeAr: IEdgePayload[] = data.modules
     .map((module: any) => {

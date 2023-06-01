@@ -26,7 +26,6 @@ const organizationSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(fetchAnOrganization.fulfilled, (state, action) => {
-      console.log('Org Thunk', action.payload);
       state.organization = action.payload;
     });
   },

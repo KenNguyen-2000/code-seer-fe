@@ -5,10 +5,12 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   addEdge,
   Background,
+  BackgroundVariant,
   Controls,
   Edge,
   getConnectedEdges,
   getIncomers,
+  getOutgoers,
   MarkerType,
   MiniMap,
   Node,
@@ -29,6 +31,8 @@ import {
   FloatingEdge,
   ButtonOutline,
   FloatingButtons,
+  Loader,
+  ButtonFilled,
 } from '@/components';
 import './dependency-map.module.scss';
 import {
@@ -62,11 +66,17 @@ import useUser from '@/hooks/useUser';
 import Link from 'next/link';
 import Script from 'next/script';
 import { setSelectedNode } from '@/redux/slices/nodeSlice';
-import { setCurMap, setLabels, setNodeLabels } from '@/redux/slices/mapSlice';
+import {
+  setCurMap,
+  setLabels,
+  setNodeLabels,
+  updateCurrentMapState,
+} from '@/redux/slices/mapSlice';
 import { retrieveAnOrganization } from '@/services/organization.service';
 import { setOrganization } from '@/redux/slices/organizationSlice';
 import { fetchDepMaps } from '@/redux/thunks/map.thunk';
 import { fetchAnOrganization } from '@/redux/thunks/organization.thunk';
+import { fetchDomainById } from '@/redux/thunks/domain.thunk';
 
 const padding = 20;
 const gap = 25;
@@ -89,10 +99,19 @@ function Codebase() {
   const curMap: IDependencyMap | undefined = useAppSelector(
     (state) => state.mapSlice.map
   );
+  const curDepMaps: IDependencyMap[] = useAppSelector(
+    (state) => state.domain.dependencyMaps
+  );
+  const isMapLoading: boolean = useAppSelector(
+    (state) => state.mapSlice.isLoading
+  );
+
+  const currentState = useAppSelector((state) => state.mapSlice.currentState);
+
+  const isDomainLoading = useAppSelector((state) => state.domain.isLoading);
 
   const [mapData, setMapData] = useState<IMainData>({ nodes: [], edges: [] });
   const [explorer, setExplorer] = useState<any[]>([]);
-  const [depMaps, setDepMaps] = useState([]);
   const [workflowRunning, setWorkflowRunning] = useState(false);
   const [showRedirect, setShowRedirect] = useState(false);
   const [floatingBtns, setFloatingBtns] = useState({
@@ -149,7 +168,7 @@ function Codebase() {
             pC.from === node.id || pC.from.split('/').includes(node.id)
         );
 
-        return exactConnections.forEach((exactConnect) => {
+        return exactConnections.forEach((exactConnect, index) => {
           if (node.id.includes('.')) {
             if (exactConnect.from === node.id) {
               const isTargetVisible = allNodes.find(
@@ -167,6 +186,7 @@ function Codebase() {
                 source: source,
                 target: target,
                 type: 'floating',
+                zIndex: 1000 + node.data.depth * 100 - index,
                 markerEnd: {
                   type: MarkerType.ArrowClosed,
                 },
@@ -190,6 +210,7 @@ function Codebase() {
                 source: source,
                 target: target as string,
                 type: 'floating',
+                zIndex: 1000 + node.data.depth * 100 - index,
                 markerEnd: {
                   type: MarkerType.ArrowClosed,
                 },
@@ -223,7 +244,6 @@ function Codebase() {
 
       const newNodes: Node[] = parentNode.data.children.map(
         (cN: any, index: number) => {
-          console.log(cN);
           const nodeData = {
             id: cN.name,
             position: {
@@ -251,8 +271,8 @@ function Codebase() {
               background: cN.data
                 ? cN.data.labelData
                   ? cN.data.labelData.color
-                  : ''
-                : '',
+                  : 'rgba(255,255,255)'
+                : 'rgba(255,255,255)',
             },
             parentNode: parentNode.id,
 
@@ -513,11 +533,13 @@ function Codebase() {
             ...edge,
             markerEnd: {
               type: MarkerType.ArrowClosed,
-              color: '#33333361',
+              // color: '#33333361',
+              color: 'transparent',
             },
             style: {
               strokeWidth: 1,
-              stroke: '#33333361',
+              // stroke: '#33333361',
+              stroke: 'transparent',
             },
           };
         })
@@ -526,12 +548,73 @@ function Codebase() {
     [edges, nodes, setEdges]
   );
 
+  const handleHightLightNodes = useCallback(
+    (node: Node) => {
+      let incommerNodes = getIncomers(node, nodes, edges);
+      let outgoersNodes = getOutgoers(node, nodes, edges);
+      let arr = new Map();
+      if (!node.id.includes('.')) {
+        const children = getAllChildNodes(node, nodes);
+
+        [node, ...children].forEach((n: Node) => {
+          [
+            n,
+            ...getIncomers(n, nodes, edges),
+            ...getOutgoers(n, nodes, edges),
+          ].forEach((nds: Node) => {
+            if (!arr.has(nds.id)) {
+              arr.set(nds.id, nds);
+            }
+          });
+        });
+      } else {
+        [
+          ...getIncomers(node, nodes, edges),
+          ...getOutgoers(node, nodes, edges),
+          node,
+        ].forEach((nds: Node) => {
+          if (!arr.has(nds.id)) {
+            arr.set(nds.id, nds);
+          }
+        });
+      }
+
+      const nodeArr = [...incommerNodes, ...outgoersNodes, node];
+      // console.log(nodeArr);
+      setNodes((prev) =>
+        prev.map((n: Node, index, array) => {
+          const exactNode = arr.get(n.id);
+          if (exactNode) {
+            return {
+              ...exactNode,
+              style: {
+                ...exactNode.style,
+                opacity: 1,
+              },
+            };
+          }
+
+          return {
+            ...n,
+            style: {
+              ...n.style,
+              opacity: 0.5,
+            },
+          };
+        })
+      );
+    },
+
+    [edges, nodes, setNodes]
+  );
+
   const onNodeClick = useCallback(
     async (event: any, node: Node) => {
       const { pageX, pageY, clientX, clientY } = event;
       dispatch(setSelectedNode(node));
       if (node.data.label.includes('.')) {
         handleHightLightEdges(node);
+        handleHightLightNodes(node);
         setFloatingBtns({
           isShown: true,
           position: {
@@ -545,6 +628,7 @@ function Codebase() {
           createNewNodes(node);
         } else {
           handleHightLightEdges(node);
+          handleHightLightNodes(node);
         }
       }
     },
@@ -613,6 +697,13 @@ function Codebase() {
   );
 
   /**     *******Services*********      */
+  const handleSaveTempMap = useCallback(() => {
+    localStorage.setItem('codeseer_nodes', JSON.stringify({ data: nodes }));
+    localStorage.setItem('codeseer_edges', JSON.stringify({ data: edges }));
+
+    dispatch(updateCurrentMapState([nodes, edges]));
+  }, [dispatch, edges, nodes]);
+
   const handleGetWorkflow = async ({
     owner,
     repository,
@@ -688,33 +779,43 @@ function Codebase() {
   };
 
   useEffect(() => {
+    if (curMap) {
+      const { initialNodes, initialEdges, explorer, mainData } =
+        generateInitSetup(JSON.parse(curMap.payload));
+
+      // const nodesData = JSON.parse(
+      //   localStorage.getItem('codeseer_nodes') as string
+      // );
+      // const edgesData = JSON.parse(
+      //   localStorage.getItem('codeseer_edges') as string
+      // );
+
+      if (currentState[0].length > 0) setNodes(currentState[0]);
+      else setNodes(initialNodes);
+
+      if (currentState[1].length > 0) setEdges(currentState[1]);
+      else setEdges(initialEdges);
+      setExplorer(explorer);
+      setMapData(mainData);
+
+      const el = document.querySelector('.react-flow__edges');
+      console.log(el?.setAttribute('style', 'z-index: 3000'));
+    }
+  }, [curMap, currentState, setEdges, setNodes]);
+
+  useEffect(() => {
     const fetchMaps = async () => {
       try {
-        // const res = await retrieveMaps(domainId as string);
-        const res = await dispatch(fetchDepMaps(domainId as string)).unwrap();
-        console.log('Unwrap', res);
-        const resDomain = await retrieveADomain(domainId as string);
+        dispatch(fetchDepMaps(domainId as string));
+        dispatch(fetchDomainById(domainId as string));
         if (!organization)
           dispatch(fetchAnOrganization(organizationId as string));
-        dispatch(setDomain(resDomain.data));
-        dispatch(setDependencyMaps(res));
-        setDepMaps(res);
-        console.log(JSON.parse(res[0].payload));
-        if (res.length > 0) {
-          const { initialNodes, initialEdges, explorer, mainData } =
-            generateInitSetup(JSON.parse(res[0].payload));
-
-          setNodes(initialNodes);
-          setEdges(initialEdges);
-          setExplorer(explorer);
-          setMapData(mainData);
-        }
       } catch (error) {
         console.log(error);
       }
     };
-    if (domainId) fetchMaps();
-  }, [dispatch, domainId, organization, organizationId, setEdges, setNodes]);
+    if (domainId && organizationId) fetchMaps();
+  }, [dispatch, domainId, organization, organizationId]);
 
   if (workflowRunning)
     return (
@@ -729,7 +830,7 @@ function Codebase() {
       <ActionBar explorer={explorer} />
       <div className='flex-grow w-full h-full flex flex-col relative'>
         <div className='px-7 py-6 flex justify-between bg-[#F7F8FA] border-b-2 border-[#E3E3E3] drop-shadow-md'>
-          <div className='flex gap-3 text-lg font-semibold'>
+          <div className='flex items-center gap-3 text-lg font-semibold'>
             <span className='text-md_blue'>
               {organization ? organization?.organization?.name : 'Organization'}
             </span>
@@ -741,10 +842,16 @@ function Codebase() {
             <span className='text-primary_blue'>
               {domain ? domain.domain.repository : 'Repository'}
             </span>
+            <ChevronRight className='text-md_blue' />
+            <span className='text-primary_blue'>
+              {curMap && curMap.version !== null
+                ? curMap.version.substring(1, curMap.version.length - 1)
+                : 'Version'}
+            </span>
           </div>
           <ClipboardText className='text-dark_blue_2 cursor-pointer' />
         </div>
-        {depMaps.length === 0 ? (
+        {curDepMaps.length === 0 ? (
           <div className='flex flex-col grow w-full h-screen justify-center items-center relative'>
             <ButtonOutline className='rounded-md' onClick={handleRunWorkflow}>
               Run work flow
@@ -761,27 +868,46 @@ function Codebase() {
             )}
           </div>
         ) : (
-          <div className='flex grow w-full h-screen relative'>
-            {selectedNode && curMap ? (
-              <FloatingActionBar selectedNode={selectedNode} />
-            ) : null}
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              connectionLineComponent={FloatingConnectionLine}
-              nodeTypes={nodeTypes}
-              edgeTypes={edgeTypes}
-              fitView
-              onNodeClick={onNodeClick}
-              onNodeDrag={handleNodeDrag}
-            >
-              <MiniMap />
-              <Controls />
-              <Background />
-            </ReactFlow>
+          <div className='flex grow items-center justify-center w-full h-screen relative'>
+            {isMapLoading || isDomainLoading ? (
+              <Loader width='80px' height='80px' />
+            ) : (
+              <>
+                {selectedNode && curMap ? (
+                  <FloatingActionBar selectedNode={selectedNode} />
+                ) : null}
+                {curMap ? (
+                  <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+                    onConnect={onConnect}
+                    connectionLineComponent={FloatingConnectionLine}
+                    nodeTypes={nodeTypes}
+                    edgeTypes={edgeTypes}
+                    fitView
+                    onNodeClick={onNodeClick}
+                    onNodeDrag={handleNodeDrag}
+                  >
+                    <MiniMap />
+                    {/* <Controls /> */}
+                    <Background className='bg-gray-100' />
+                    <Panel
+                      position='bottom-left'
+                      style={{ marginRight: '-20px' }}
+                    >
+                      <ButtonFilled
+                        onClick={handleSaveTempMap}
+                        className='rounded-md'
+                      >
+                        Save
+                      </ButtonFilled>
+                    </Panel>
+                  </ReactFlow>
+                ) : null}
+              </>
+            )}
           </div>
         )}
       </div>

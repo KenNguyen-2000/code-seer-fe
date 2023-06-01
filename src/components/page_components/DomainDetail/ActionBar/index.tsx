@@ -1,24 +1,27 @@
 'use client';
 
-import React, {
-  MouseEvent,
-  MouseEventHandler,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import FolderTree from '../FolderTree';
-import { useAppSelector } from '@/redux/reduxHooks';
+import { useAppDispatch, useAppSelector } from '@/redux/reduxHooks';
 import { IDependencyMap } from '@/interfaces/dependency-map.interface';
+import { fetchMapById } from '@/redux/thunks/map.thunk';
+
+import styles from './action-bar.module.scss';
 
 const ActionBar = ({ explorer }: any) => {
+  const dispatch = useAppDispatch();
+
   const wrapperRef = useRef<HTMLDivElement>(null);
   const dependencyMaps = useAppSelector((state) => state.domain.dependencyMaps);
 
-  const [dx, setDx] = useState(0);
   const [width, setWidth] = useState(400);
   const [dragging, setDragging] = useState(false);
   const [startX, setStartX] = useState(0);
+  const curMap = useAppSelector((state) => state.mapSlice.map);
+
+  const handleSwitchMap = (mapId: string) => {
+    dispatch(fetchMapById(mapId));
+  };
 
   useEffect(() => {
     const handleMouseMove = (event: any) => {
@@ -64,29 +67,40 @@ const ActionBar = ({ explorer }: any) => {
       />
       <div className='w-full bg-white rounded-lg py-2 px-3 flex flex-col gap-[10px]'>
         <div className='w-full text-center'>Version</div>
-        <ul className='flex flex-col gap-[10px]'>
+        <ul
+          className={`${styles.version__list__wrapper} relative flex flex-col gap-[10px] max-h-[140px] `}
+        >
           {dependencyMaps?.map((item: IDependencyMap, index: number) => {
             const createdDate = new Date(item.createdAt as string);
             const dateString = `${createdDate.getDate()}/${
               createdDate.getMonth() + 1
             }/${createdDate.getFullYear()}`;
 
-            if (index < 3) {
-              return (
-                <li
-                  key={item.id}
-                  className={`p-2 flex justify-between ${
-                    index === 0
-                      ? 'bg-md_blue text-white'
-                      : 'text-md_blue hover:bg-md_blue hover:text-white'
-                  } rounded-[4px] cursor-pointer transition-all duration-200`}
+            return (
+              <li
+                key={item.id}
+                className={`h-10 rounded-[4px] cursor-pointer transition-all duration-200 ${
+                  item.id === curMap?.id
+                    ? 'bg-md_blue text-white'
+                    : 'text-md_blue hover:bg-md_blue hover:text-white'
+                }`}
+              >
+                <button
+                  className='w-full flex justify-between p-2 '
+                  onClick={handleSwitchMap.bind(null, item.id)}
                 >
-                  <span>Version 1.0.{index + 1}</span>
+                  <span>
+                    {item.version !== null
+                      ? `Version ${item.version.substring(
+                          1,
+                          item.version.length - 1
+                        )}`
+                      : `Version 1.0.${index + 1}`}
+                  </span>
                   <span>{dateString}</span>
-                </li>
-              );
-            }
-            return null;
+                </button>
+              </li>
+            );
           })}
         </ul>
       </div>
