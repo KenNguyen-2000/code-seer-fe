@@ -900,7 +900,7 @@ function Codebase() {
                 )}
               </main>
             ) : (
-              <main className='flex grow items-center justify-center w-full h-screen relative'>
+              <main className={styles.main__wrapper}>
                 {isMapLoading ? (
                   <Loader width='80px' height='80px' />
                 ) : (

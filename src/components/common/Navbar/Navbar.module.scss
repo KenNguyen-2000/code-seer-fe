@@ -6,10 +6,12 @@
   align-items: center;
   padding: 12px 44px;
   gap: 10px;
-
+  height: 64px;
   background: #1e3d59;
   box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3);
   color: #fff;
+  max-height: 64px;
+  overflow: hidden;
 }
 
 .left {

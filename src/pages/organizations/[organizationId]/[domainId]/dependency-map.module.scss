@@ -32,3 +32,13 @@
   display: flex;
   height: calc(100vh - 80px);
 }
+
+.main__wrapper {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: calc(100vh - 64px - 80px);
+  position: relative;
+}
