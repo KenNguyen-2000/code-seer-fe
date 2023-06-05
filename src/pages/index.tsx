@@ -42,13 +42,13 @@ export default function Home() {
               className='flex  gap-4 items-end md:mt-0  md:gap-5 font-semibold text-base text-dark_blue'
             >
               <li className='relative after:content-[""] after:w-0 after:h-[1.5px] after:bg-dark_blue after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 hover:after:w-full after:transition-all after:origin-center'>
-                <Link href='/'>Home</Link>
+                <Link href='/welcome'>Home</Link>
               </li>
               <li className='relative after:content-[""] after:w-0 after:h-[1.5px] after:bg-dark_blue after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 hover:after:w-full after:transition-all after:origin-center'>
-                <Link href='/features'>Features</Link>
+                <Link href='/welcome'>Features</Link>
               </li>
               <li className='relative after:content-[""] after:w-0 after:h-[1.5px] after:bg-dark_blue after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 hover:after:w-full after:transition-all after:origin-center'>
-                <Link href='/about'>About</Link>
+                <Link href='/welcome'>About</Link>
               </li>
               <li className='relative after:content-[""] after:w-0 after:h-[1.5px] after:bg-dark_blue after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 hover:after:w-full after:transition-all after:origin-center'>
                 <Link href='/pricing'>Pricing</Link>
