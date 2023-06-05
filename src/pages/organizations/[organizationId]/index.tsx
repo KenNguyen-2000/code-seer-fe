@@ -9,6 +9,7 @@ import PrivateRoute from '@/components/common/PrivateRoute';
 import { useAppDispatch } from '@/redux/reduxHooks';
 import { setDependencyMaps } from '@/redux/slices/domainSlice';
 import { fetchAnOrganization } from '@/redux/thunks/organization.thunk';
+import Head from 'next/head';
 
 const OrganizationDetail = () => {
   const router = useRouter();
@@ -23,6 +24,9 @@ const OrganizationDetail = () => {
 
   return (
     <>
+      <Head>
+        <title>CodeSeer: Organization</title>
+      </Head>
       <div className='flex-grow pl-6 py-9'>
         <section className='mb-6'>
           <h1 className='text-dark_blue text-xl font-semibold mb-4'>

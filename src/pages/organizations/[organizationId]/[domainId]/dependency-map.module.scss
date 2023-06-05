@@ -26,3 +26,9 @@
     top: -10px;
   }
 }
+
+.body__wrapper {
+  width: 100%;
+  display: flex;
+  height: calc(100vh - 80px);
+}

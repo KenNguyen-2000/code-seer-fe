@@ -22,7 +22,7 @@ export interface MapSlice {
   isLoading: boolean;
   map?: IDependencyMap;
   labels: IMapLabel[];
-  nodeLabels: INodeLabel[];
+  nodeLabels: INodeLabel;
   nodeComments: INodeComment[];
   currentState: [Node[], Edge[]];
 }
@@ -30,7 +30,7 @@ export interface MapSlice {
 const initialState: MapSlice = {
   isLoading: false,
   labels: [],
-  nodeLabels: [],
+  nodeLabels: {},
   nodeComments: [],
   currentState: [[], []],
 };
@@ -56,12 +56,12 @@ const mapSlice = createSlice({
       state.map = action.payload;
     },
 
-    setNodeLabels: (state, action: PayloadAction<INodeLabel[]>) => {
+    setNodeLabels: (state, action: PayloadAction<INodeLabel>) => {
       state.nodeLabels = action.payload;
     },
 
     addNodeLabels: (state, action: PayloadAction<INodeLabel>) => {
-      state.nodeLabels.push(action.payload);
+      state.nodeLabels = { ...state.nodeLabels, ...action.payload };
     },
 
     deleteLabel: (state, action: PayloadAction<IMapLabel>) => {
@@ -152,7 +152,7 @@ const mapSlice = createSlice({
         state.labels = data.labels[0];
       } else {
         state.labels = [];
-        state.nodeLabels = [];
+        state.nodeLabels = {};
       }
       if (data.comments) state.nodeComments = data.comments;
       else state.nodeComments = [];

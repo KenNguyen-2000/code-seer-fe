@@ -141,11 +141,11 @@ const FloatingActionBar: React.FC<IFloatingActionBar> = ({ selectedNode }) => {
       return (
         <>
           <div className='w-full flex flex-col bg-white  border border-light_gray rounded-md'>
-            {nodeComments?.map((ndsCmt) => {
+            {nodeComments?.map((ndsCmt, index) => {
               const timeStamp = new Date(ndsCmt.createdAt);
               return (
                 <>
-                  <div key={ndsCmt.id} className='py-1 px-2'>
+                  <div key={ndsCmt.id + 'comment'} className='py-1 px-2'>
                     <div className='flex items-center justify-between gap-2 text-sm font-semibold text-dark_blue'>
                       <span>{ndsCmt.author}</span>
                       <span className='text-primary_gray'>
@@ -196,8 +196,8 @@ const FloatingActionBar: React.FC<IFloatingActionBar> = ({ selectedNode }) => {
             Map label
           </div>
           <ul ref={labelListRef}>
-            {mapLabels?.map((label: IMapLabel) => (
-              <li key={label.id} className={styles.label__item}>
+            {mapLabels?.map((label: IMapLabel, index) => (
+              <li key={label.id + 'label'} className={styles.label__item}>
                 <LabelItem
                   data={label}
                   changeLabel={handleChangeLabel.bind(null, label)}

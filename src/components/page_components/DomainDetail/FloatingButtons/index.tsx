@@ -5,7 +5,7 @@ import { BrandSafariIcon, MessageIcon, TagIcon } from '@/components/icons';
 import { clearLabel, setActionOnNode } from '@/redux/slices/nodeSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/reduxHooks';
 import { Node, useReactFlow } from 'reactflow';
-import { IMapLabel } from '@/interfaces';
+import { IMapLabel, INodeLabel } from '@/interfaces';
 import { updateMapLabels } from '@/services/map.service';
 import { addNodeLabels } from '@/redux/slices/mapSlice';
 
@@ -29,11 +29,11 @@ const FloatingButtons: React.FC<IFloatingButtons> = ({ isShow }) => {
   const reactflowInstances = useReactFlow();
 
   const handleLabelNode = async (label: IMapLabel) => {
-    const newNodeLabel = { nodeId: selectedNode.id, ...label };
+    const newNodeLabel: INodeLabel = { [selectedNode.id]: label };
 
     try {
       const res = await updateMapLabels(
-        [labelsData, [...nodeLabels, { ...newNodeLabel }]],
+        [labelsData, { ...nodeLabels, ...newNodeLabel }],
         mapComments,
         curMap.id
       );
@@ -63,11 +63,19 @@ const FloatingButtons: React.FC<IFloatingButtons> = ({ isShow }) => {
     dispatch(clearLabel());
 
     try {
+      const nodeLabelsData = Object.keys(nodeLabels).reduce(
+        (result: INodeLabel, key: string) => {
+          if (key !== selectedNode.id) {
+            result[key] = nodeLabels[key];
+          }
+
+          return result;
+        },
+        {} as INodeLabel
+      );
+
       const res = await updateMapLabels(
-        [
-          labelsData,
-          [...nodeLabels.filter((n) => n.nodeId !== selectedNode.id)],
-        ],
+        [labelsData, nodeLabelsData],
         nodeComments,
         curMap.id
       );

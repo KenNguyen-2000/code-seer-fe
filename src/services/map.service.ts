@@ -6,13 +6,13 @@ import { toast } from 'react-toastify';
 export const mapEndpoint = '/maps';
 
 export const updateMapLabels = async (
-  labels: [IMapLabel[], INodeLabel[]],
+  labels: [IMapLabel[], INodeLabel],
   comments: any[],
   mapId: string
 ) => {
   const res = await interceptor.put(`${mapEndpoint}/${mapId}`, {
     comments,
-    labels: labels,
+    labels,
   });
 
   if (res.data.success) {
@@ -22,7 +22,7 @@ export const updateMapLabels = async (
 };
 
 export const updateMapComments = async (
-  labels: [IMapLabel[], INodeLabel[]],
+  labels: [IMapLabel[], INodeLabel],
   comments: INodeComment[],
   mapId: string
 ) => {

@@ -21,6 +21,8 @@ import Loader from './common/Loader';
 import GoogleScript from './common/GoogleScript';
 import OrganizationLoader from './page_components/Organizations/OrganizationLoader';
 import FloatingButtons from './page_components/DomainDetail/FloatingButtons';
+import FirstSection from './page_components/Welcome/FirstSection';
+import HeaderBar from './page_components/Welcome/HeaderBar';
 
 export {
   ButtonOutline,
@@ -46,4 +48,6 @@ export {
   GoogleScript,
   OrganizationLoader,
   FloatingButtons,
+  FirstSection,
+  HeaderBar,
 };

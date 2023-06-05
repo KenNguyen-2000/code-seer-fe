@@ -27,10 +27,11 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <>
       <Head>
+        <link rel='shortcut icon' href='/codeseer-logo.svg' />
         <title>CodeSeer</title>
         <meta
           property='description'
-          content='CodeSeer is a code visualize platform'
+          content='CodeSeer is a code visibility platform for understanding, building, and refactoring without guess works. Instantly map and automate your codebase'
         />
       </Head>
       <ReactFlowProvider>

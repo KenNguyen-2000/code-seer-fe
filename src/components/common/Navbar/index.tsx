@@ -2,11 +2,21 @@ import React from 'react';
 import styles from './Navbar.module.scss';
 import Image from 'next/image';
 import CodeSeerLogo from '/public/codeseer-logo.png';
-import { BellFilledIcon, PlusIcon, SearchIcon } from '@/components/icons';
+import {
+  BellFilledIcon,
+  LogoutIcon,
+  PlusIcon,
+  SearchIcon,
+} from '@/components/icons';
 import { useRouter } from 'next/router';
 
 const Navbar: React.FC = () => {
   const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    router.push('/login');
+  };
 
   return (
     <header className={styles.wrapper}>
@@ -36,6 +46,12 @@ const Navbar: React.FC = () => {
         </button>
         <button className='text-white hover:scale-110 transition ease-out'>
           <PlusIcon />
+        </button>
+        <button
+          onClick={handleLogout}
+          className='text-white hover:scale-110 transition ease-out'
+        >
+          <LogoutIcon />
         </button>
       </div>
     </header>

@@ -7,6 +7,7 @@ import { IDependencyMap } from '@/interfaces/dependency-map.interface';
 import { fetchMapById } from '@/redux/thunks/map.thunk';
 
 import styles from './action-bar.module.scss';
+import { setCurMap } from '@/redux/slices/mapSlice';
 
 const ActionBar = ({ explorer }: any) => {
   const dispatch = useAppDispatch();
@@ -18,9 +19,12 @@ const ActionBar = ({ explorer }: any) => {
   const [dragging, setDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const curMap = useAppSelector((state) => state.mapSlice.map);
+  const depMaps = useAppSelector((state) => state.domain.dependencyMaps);
 
   const handleSwitchMap = (mapId: string) => {
-    dispatch(fetchMapById(mapId));
+    const exactMap = depMaps.find((map) => map.id === mapId);
+    if (exactMap) dispatch(setCurMap(exactMap));
+    else dispatch(fetchMapById(mapId));
   };
 
   useEffect(() => {
@@ -56,7 +60,7 @@ const ActionBar = ({ explorer }: any) => {
   };
 
   return (
-    <div
+    <aside
       className=' p-3 bg-light_white flex flex-col gap-3 relative transition ease-out duration-200'
       ref={wrapperRef}
       style={{ width: `${width}px` }}
@@ -65,7 +69,7 @@ const ActionBar = ({ explorer }: any) => {
         className='absolute right-0 top-0 bottom-0 w-2 bg-transparent hover:cursor-col-resize'
         onMouseDown={handleMouseDown}
       />
-      <div className='w-full bg-white rounded-lg py-2 px-3 flex flex-col gap-[10px]'>
+      <div className='w-full bg-white rounded-lg py-2 px-3 flex flex-col gap-[10px] border border-slate-300'>
         <div className='w-full text-center'>Version</div>
         <ul
           className={`${styles.version__list__wrapper} relative flex flex-col gap-[10px] max-h-[140px] `}
@@ -91,10 +95,7 @@ const ActionBar = ({ explorer }: any) => {
                 >
                   <span>
                     {item.version !== null
-                      ? `Version ${item.version.substring(
-                          1,
-                          item.version.length - 1
-                        )}`
+                      ? `${item.version.substring(1, item.version.length - 1)}`
                       : `Version 1.0.${index + 1}`}
                   </span>
                   <span>{dateString}</span>
@@ -104,10 +105,12 @@ const ActionBar = ({ explorer }: any) => {
           })}
         </ul>
       </div>
-      <div className='flex-grow w-full max-h-[600px] py-2 px-4 bg-white overflow-y-scroll '>
-        {explorer.length > 0 && <FolderTree explorer={explorer[0]} />}
+      <div className='flex-grow w-full max-h-[600px]  rounded-lg overflow-hidden  border border-slate-300'>
+        <div className='w-full h-full  max-h-[600px] py-2 px-4 bg-white overflow-y-scroll'>
+          {explorer.length > 0 && <FolderTree explorer={explorer[0]} />}
+        </div>
       </div>
-      <fieldset className='h-[200px] w-full bg-white rounded-lg px-4 py-5'>
+      {/* <fieldset className='h-[200px] w-full bg-white rounded-lg px-4 py-5 border border-slate-300'>
         <legend className='sr-only'>Rules</legend>
         <div
           className='text-sm font-semibold leading-6 text-gray-900'
@@ -189,8 +192,8 @@ const ActionBar = ({ explorer }: any) => {
             </div>
           </div>
         </div>
-      </fieldset>
-    </div>
+      </fieldset> */}
+    </aside>
   );
 };
 

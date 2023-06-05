@@ -48,8 +48,8 @@ export interface IMapLabel {
   name: string;
 }
 
-export interface INodeLabel extends IMapLabel {
-  nodeId: string;
+export interface INodeLabel {
+  [nodeId: string]: IMapLabel;
 }
 
 export interface IComment {

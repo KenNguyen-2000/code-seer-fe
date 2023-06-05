@@ -165,8 +165,7 @@ export const generateTemp = (data: IMainData, temp: any[], final: any) => {
               name: oC.to,
               data: data.nodes.find((n: any) => n.source === oC.to),
               labelData: data.nodes.find(
-                (item: any) =>
-                  item.labelData && item.labelData.nodeId === obj.name
+                (item: any) => item.labelData && item.source === obj.name
               )?.labelData,
               commentData: data.nodes.find(
                 (item: any) =>
@@ -188,8 +187,7 @@ export const generateTemp = (data: IMainData, temp: any[], final: any) => {
           obj.data = {
             ...tempData,
             labelData: data.nodes.find(
-              (item: any) =>
-                item.labelData && item.labelData.nodeId === obj.name
+              (item: any) => item.labelData && item.source === obj.name
             )?.labelData,
             commentData: data.nodes.find(
               (item: any) =>
@@ -296,9 +294,6 @@ export const generateInitialNodes = (
             depth: 0,
             labelData: labelData,
           },
-      style: {
-        background: labelData ? labelData.color : 'rgba(255,255,255,0.6)',
-      },
     };
   });
 
@@ -323,11 +318,7 @@ export const generateInitSetup = (data: any) => {
     source: module.source,
     orphan: module.orphan,
     valid: module.valid,
-    labelData: data.labels
-      ? data.labels[1].find(
-          (label: INodeLabel) => label.nodeId === module.source
-        )
-      : null,
+    labelData: data.labels ? data.labels[1][module.source] : null,
     commentData: data.comments
       ? data.comments.find(
           (comment: INodeComment) => comment.nodeId === module.source
@@ -352,6 +343,8 @@ export const generateInitSetup = (data: any) => {
   const temp = nodeAr.map((n: any) => n.source.split('/'));
   const result: IResult[] = [];
   const final = { result };
+
+  console.log(mainData);
   generateTemp(mainData, temp, final);
 
   const arrMap = new Map<string, Node>();

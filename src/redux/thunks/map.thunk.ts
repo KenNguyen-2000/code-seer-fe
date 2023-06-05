@@ -6,7 +6,7 @@ import { retrieveMaps } from '@/services/domain.service';
 
 interface IAddCommentOnNode {
   comments: INodeComment[];
-  labels: [IMapLabel[], INodeLabel[]];
+  labels: [IMapLabel[], INodeLabel];
   mapId: string;
 }
 

@@ -27,20 +27,29 @@ const domainSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(fetchDomainById.pending, (state, action) => {
-      state.isLoading = true;
-    });
-    builder.addCase(fetchDomainById.fulfilled, (state, action) => {
-      state.domain = action.payload;
-      state.isLoading = false;
-    });
-    builder.addCase(fetchDomainById.rejected, (state, action) => {
-      state.isLoading = false;
-    });
-    builder.addCase(fetchDepMaps.fulfilled, (state, action) => {
-      console.log('FetchDepMaps domainSlice');
-      state.dependencyMaps = action.payload;
-    });
+    builder
+      .addCase(fetchDomainById.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchDomainById.fulfilled, (state, action) => {
+        state.domain = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(fetchDomainById.rejected, (state, action) => {
+        state.isLoading = false;
+      });
+
+    builder
+      .addCase(fetchDepMaps.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchDepMaps.fulfilled, (state, action) => {
+        state.dependencyMaps = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(fetchDepMaps.rejected, (state) => {
+        state.isLoading = false;
+      });
   },
 });
 

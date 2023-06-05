@@ -33,6 +33,7 @@ import {
   FloatingButtons,
   Loader,
   ButtonFilled,
+  Layout,
 } from '@/components';
 import './dependency-map.module.scss';
 import {
@@ -77,6 +78,8 @@ import { setOrganization } from '@/redux/slices/organizationSlice';
 import { fetchDepMaps } from '@/redux/thunks/map.thunk';
 import { fetchAnOrganization } from '@/redux/thunks/organization.thunk';
 import { fetchDomainById } from '@/redux/thunks/domain.thunk';
+import Head from 'next/head';
+import styles from './dependency-map.module.scss';
 
 const padding = 20;
 const gap = 25;
@@ -186,7 +189,6 @@ function Codebase() {
                 source: source,
                 target: target,
                 type: 'floating',
-                zIndex: 1000 + node.data.depth * 100 - index,
                 markerEnd: {
                   type: MarkerType.ArrowClosed,
                 },
@@ -210,7 +212,6 @@ function Codebase() {
                 source: source,
                 target: target as string,
                 type: 'floating',
-                zIndex: 1000 + node.data.depth * 100 - index,
                 markerEnd: {
                   type: MarkerType.ArrowClosed,
                 },
@@ -271,8 +272,8 @@ function Codebase() {
               background: cN.data
                 ? cN.data.labelData
                   ? cN.data.labelData.color
-                  : 'rgba(255,255,255)'
-                : 'rgba(255,255,255)',
+                  : ''
+                : '',
             },
             parentNode: parentNode.id,
 
@@ -632,7 +633,13 @@ function Codebase() {
         }
       }
     },
-    [createNewNodes, dispatch, expandNode, handleHightLightEdges]
+    [
+      createNewNodes,
+      dispatch,
+      expandNode,
+      handleHightLightEdges,
+      handleHightLightNodes,
+    ]
   );
 
   /** *************Drag Event********** */
@@ -698,11 +705,16 @@ function Codebase() {
 
   /**     *******Services*********      */
   const handleSaveTempMap = useCallback(() => {
-    localStorage.setItem('codeseer_nodes', JSON.stringify({ data: nodes }));
-    localStorage.setItem('codeseer_edges', JSON.stringify({ data: edges }));
+    localStorage.setItem(
+      `codeseer_map_${curMap?.id}`,
+      JSON.stringify({
+        nodes: nodes,
+        edges: edges,
+      })
+    );
 
     dispatch(updateCurrentMapState([nodes, edges]));
-  }, [dispatch, edges, nodes]);
+  }, [curMap?.id, dispatch, edges, nodes]);
 
   const handleGetWorkflow = async ({
     owner,
@@ -783,18 +795,23 @@ function Codebase() {
       const { initialNodes, initialEdges, explorer, mainData } =
         generateInitSetup(JSON.parse(curMap.payload));
 
-      // const nodesData = JSON.parse(
-      //   localStorage.getItem('codeseer_nodes') as string
-      // );
-      // const edgesData = JSON.parse(
-      //   localStorage.getItem('codeseer_edges') as string
-      // );
+      const codeSeerMap = JSON.parse(
+        localStorage.getItem(`codeseer_map_${curMap.id}`) as string
+      );
 
-      if (currentState[0].length > 0) setNodes(currentState[0]);
-      else setNodes(initialNodes);
+      if (codeSeerMap) {
+        const nodesData = codeSeerMap.nodes;
+        const edgesData = codeSeerMap.edges;
 
-      if (currentState[1].length > 0) setEdges(currentState[1]);
-      else setEdges(initialEdges);
+        if (nodesData.length > 0) setNodes(nodesData);
+        else setNodes(initialNodes);
+
+        if (edgesData.length > 0) setEdges(edgesData);
+        else setEdges(initialEdges);
+      } else {
+        setNodes(initialNodes);
+        setEdges(initialEdges);
+      }
       setExplorer(explorer);
       setMapData(mainData);
 
@@ -826,97 +843,118 @@ function Codebase() {
     );
 
   return (
-    <div className='w-full h-screen flex overflow-hidden'>
-      <ActionBar explorer={explorer} />
-      <div className='flex-grow w-full h-full flex flex-col relative'>
-        <div className='px-7 py-6 flex justify-between bg-[#F7F8FA] border-b-2 border-[#E3E3E3] drop-shadow-md'>
-          <div className='flex items-center gap-3 text-lg font-semibold'>
-            <span className='text-md_blue'>
-              {organization ? organization?.organization?.name : 'Organization'}
-            </span>
-            <ChevronRight className='text-md_blue' />
-            <span className='text-primary_gray'>
-              {domain ? domain.domain.name : 'Domain Name'}
-            </span>
-            <ChevronRight className='text-md_blue' />
-            <span className='text-primary_blue'>
-              {domain ? domain.domain.repository : 'Repository'}
-            </span>
-            <ChevronRight className='text-md_blue' />
-            <span className='text-primary_blue'>
-              {curMap && curMap.version !== null
-                ? curMap.version.substring(1, curMap.version.length - 1)
-                : 'Version'}
-            </span>
-          </div>
-          <ClipboardText className='text-dark_blue_2 cursor-pointer' />
-        </div>
-        {curDepMaps.length === 0 ? (
-          <div className='flex flex-col grow w-full h-screen justify-center items-center relative'>
-            <ButtonOutline className='rounded-md' onClick={handleRunWorkflow}>
-              Run work flow
-            </ButtonOutline>
-            {showRedirect && (
-              <Link
-                href={`https://github.com/${
-                  domain?.domain.repository.split('/')[0]
-                }/${domain?.domain.repository.split('/')[1]}/actions`}
-                className='hover:underline py-2'
-              >
-                View workflow progress
-              </Link>
-            )}
-          </div>
-        ) : (
-          <div className='flex grow items-center justify-center w-full h-screen relative'>
-            {isMapLoading || isDomainLoading ? (
-              <Loader width='80px' height='80px' />
-            ) : (
-              <>
-                {selectedNode && curMap ? (
-                  <FloatingActionBar selectedNode={selectedNode} />
-                ) : null}
-                {curMap ? (
-                  <ReactFlow
-                    nodes={nodes}
-                    edges={edges}
-                    onNodesChange={onNodesChange}
-                    onEdgesChange={onEdgesChange}
-                    onConnect={onConnect}
-                    connectionLineComponent={FloatingConnectionLine}
-                    nodeTypes={nodeTypes}
-                    edgeTypes={edgeTypes}
-                    fitView
-                    onNodeClick={onNodeClick}
-                    onNodeDrag={handleNodeDrag}
+    <>
+      <Head>
+        <title>CodeSeer: Dependency Maps</title>
+      </Head>
+      <section className='w-full h-screen flex overflow-hidden'>
+        <div className='flex-grow w-full h-full flex flex-col relative'>
+          <header className='h-[80px] px-7 py-6 flex justify-between bg-[#F7F8FA] border-b-2 border-[#E3E3E3] drop-shadow-md'>
+            <div className='flex items-center gap-3 text-lg font-semibold'>
+              <span className='text-md_blue'>
+                {organization
+                  ? organization?.organization?.name
+                  : 'Organization'}
+              </span>
+              <ChevronRight className='text-md_blue' />
+              <span className='text-primary_gray'>
+                {domain ? domain.domain.name : 'Domain Name'}
+              </span>
+              <ChevronRight className='text-md_blue' />
+              <span className='text-primary_blue'>
+                {domain ? domain.domain.repository : 'Repository'}
+              </span>
+              <ChevronRight className='text-md_blue' />
+              <span className='text-primary_blue'>
+                {curMap && curMap.version !== null
+                  ? curMap.version.substring(1, curMap.version.length - 1)
+                  : 'Version'}
+              </span>
+            </div>
+            <ClipboardText className='text-dark_blue_2 cursor-pointer' />
+          </header>
+          <div className={styles.body__wrapper}>
+            <ActionBar explorer={explorer} />
+
+            {isDomainLoading ? (
+              <div className='w-full h-full flex justify-center items-center'>
+                <Loader width='80px' height='80px' />
+              </div>
+            ) : curDepMaps.length === 0 ? (
+              <main className='flex flex-col grow w-full h-screen justify-center items-center relative'>
+                <ButtonOutline
+                  className='rounded-md'
+                  onClick={handleRunWorkflow}
+                >
+                  Run work flow
+                </ButtonOutline>
+                {showRedirect && (
+                  <Link
+                    href={`https://github.com/${
+                      domain?.domain.repository.split('/')[0]
+                    }/${domain?.domain.repository.split('/')[1]}/actions`}
+                    className='hover:underline py-2'
                   >
-                    <MiniMap />
-                    {/* <Controls /> */}
-                    <Background className='bg-gray-100' />
-                    <Panel
-                      position='bottom-left'
-                      style={{ marginRight: '-20px' }}
-                    >
-                      <ButtonFilled
-                        onClick={handleSaveTempMap}
-                        className='rounded-md'
+                    View workflow progress
+                  </Link>
+                )}
+              </main>
+            ) : (
+              <main className='flex grow items-center justify-center w-full h-screen relative'>
+                {isMapLoading ? (
+                  <Loader width='80px' height='80px' />
+                ) : (
+                  <>
+                    {selectedNode && curMap ? (
+                      <FloatingActionBar selectedNode={selectedNode} />
+                    ) : null}
+                    {curMap ? (
+                      <ReactFlow
+                        nodes={nodes}
+                        edges={edges}
+                        onNodesChange={onNodesChange}
+                        onEdgesChange={onEdgesChange}
+                        onConnect={onConnect}
+                        connectionLineComponent={FloatingConnectionLine}
+                        nodeTypes={nodeTypes}
+                        edgeTypes={edgeTypes}
+                        fitView
+                        onNodeClick={onNodeClick}
+                        onNodeDrag={handleNodeDrag}
                       >
-                        Save
-                      </ButtonFilled>
-                    </Panel>
-                  </ReactFlow>
-                ) : null}
-              </>
+                        <MiniMap />
+                        {/* <Controls /> */}
+                        <Background />
+                        <Panel
+                          position='bottom-left'
+                          style={{ marginRight: '-20px' }}
+                        >
+                          <ButtonFilled
+                            onClick={handleSaveTempMap}
+                            className='rounded-md'
+                          >
+                            Save
+                          </ButtonFilled>
+                        </Panel>
+                      </ReactFlow>
+                    ) : null}
+                  </>
+                )}
+              </main>
             )}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      </section>
+    </>
   );
 }
 
 export default Codebase;
 
 Codebase.getLayout = function getLayout(page: any) {
-  return <PrivateRoute>{page}</PrivateRoute>;
+  return (
+    <PrivateRoute>
+      <Layout>{page}</Layout>
+    </PrivateRoute>
+  );
 };
