@@ -8,7 +8,6 @@ function CustomNode(props: NodeProps) {
 
   const handleCollapseNode = () => {
     if (data.isExpand) {
-      console.log('Collapse');
     }
   };
 

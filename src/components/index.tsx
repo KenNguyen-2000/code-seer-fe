@@ -23,6 +23,8 @@ import OrganizationLoader from './page_components/Organizations/OrganizationLoad
 import FloatingButtons from './page_components/DomainDetail/FloatingButtons';
 import FirstSection from './page_components/Welcome/FirstSection';
 import HeaderBar from './page_components/Welcome/HeaderBar';
+import ThirdSection from './page_components/Welcome/ThirdSection';
+import FourthSection from './page_components/Welcome/FourthSection';
 
 export {
   ButtonOutline,
@@ -50,4 +52,6 @@ export {
   FloatingButtons,
   FirstSection,
   HeaderBar,
+  ThirdSection,
+  FourthSection,
 };

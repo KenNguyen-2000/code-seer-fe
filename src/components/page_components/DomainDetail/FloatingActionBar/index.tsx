@@ -154,7 +154,9 @@ const FloatingActionBar: React.FC<IFloatingActionBar> = ({ selectedNode }) => {
                     </div>
                     <p className='w-full text-base'>{ndsCmt.content}</p>
                   </div>
-                  <hr className='border border-solid border-light_gray my-1' />
+                  {index !== nodeComments.length - 1 ? (
+                    <hr className='border border-solid border-light_gray my-1' />
+                  ) : null}
                 </>
               );
             })}

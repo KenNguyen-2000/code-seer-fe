@@ -344,7 +344,6 @@ export const generateInitSetup = (data: any) => {
   const result: IResult[] = [];
   const final = { result };
 
-  console.log(mainData);
   generateTemp(mainData, temp, final);
 
   const arrMap = new Map<string, Node>();

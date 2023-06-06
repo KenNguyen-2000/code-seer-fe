@@ -118,8 +118,6 @@ const mapSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(fetchDepMaps.fulfilled, (state, action) => {
-      console.log('FetchDepMaps mapSlice');
-
       if (action.payload && action.payload.length > 0) {
         const data = JSON.parse(action.payload[0].payload);
         if (data.labels) {

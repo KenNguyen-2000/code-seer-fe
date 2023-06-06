@@ -581,7 +581,6 @@ function Codebase() {
       }
 
       const nodeArr = [...incommerNodes, ...outgoersNodes, node];
-      // console.log(nodeArr);
       setNodes((prev) =>
         prev.map((n: Node, index, array) => {
           const exactNode = arr.get(n.id);
@@ -816,7 +815,6 @@ function Codebase() {
       setMapData(mainData);
 
       const el = document.querySelector('.react-flow__edges');
-      console.log(el?.setAttribute('style', 'z-index: 3000'));
     }
   }, [curMap, currentState, setEdges, setNodes]);
 

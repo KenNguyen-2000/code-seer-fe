@@ -1,4 +1,10 @@
-import { FirstSection, Footer, HeaderBar } from '@/components';
+import {
+  FirstSection,
+  Footer,
+  FourthSection,
+  HeaderBar,
+  ThirdSection,
+} from '@/components';
 import SecondSection from '@/components/page_components/Welcome/SecondSection';
 import Head from 'next/head';
 import React from 'react';
@@ -15,6 +21,8 @@ const WelcomePage = () => {
         <main>
           <FirstSection />
           <SecondSection />
+          <ThirdSection />
+          <FourthSection />
         </main>
         <Footer />
       </div>

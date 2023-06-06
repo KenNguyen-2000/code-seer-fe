@@ -1,0 +1,62 @@
+@import '@/utils/sass/baseVariable';
+
+.wrapper {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  width: calc($screenWidth - 24px);
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 1px;
+  max-width: 100%;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.label__number {
+  display: inline-flex;
+  border-radius: 100%;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-bottom: 24px;
+  background: linear-gradient(90deg, #ff4d4d, #f9cb28);
+}
+
+.label__heading {
+  font-size: 2rem;
+  letter-spacing: -0.05em;
+  margin: 0;
+  font-weight: 700;
+}
+
+.label__text {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+  background-image: linear-gradient(90deg, #ff4d4d, #f9cb28);
+}
+
+.title__title {
+  text-align: center;
+  margin: 0 0 24px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  font-size: 3.75rem;
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), #000);
+  -webkit-background-clip: text;
+  color: transparent;
+  display: inline;
+}

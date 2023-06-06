@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './first-section.module.scss';
 import ButtonFilled from '@/components/common/ButtonFilled';
 import ButtonOutline from '@/components/common/ButtonOutline';
-import nextjs from '/public/favicon.ico';
+import codeseer from '/public/codeseer-logo.svg';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
@@ -19,7 +19,7 @@ const FirstSection = () => {
           >
             <span className={styles.animated_gradient_text_background}>
               <span className={styles.animated_gradient_text_foreground}>
-                Develop.
+                Integrate.
               </span>
             </span>
             <span className={styles.animated_gradient_text_background}>
@@ -70,11 +70,11 @@ const FirstSection = () => {
                 <>
                   <div key={index} className='mx-6 flex items-center gap-2'>
                     <Image
-                      src={nextjs}
+                      src={codeseer}
                       alt='nextjs icon'
                       className='w-full h-8'
                     />
-                    <span className='font-medium text-lg'>Trusted</span>
+                    <span className='font-medium text-lg'>CodeSeer</span>
                   </div>
                 </>
               ))}
@@ -84,11 +84,11 @@ const FirstSection = () => {
                 <>
                   <div key={index} className='mx-6 flex items-center gap-2'>
                     <Image
-                      src={nextjs}
+                      src={codeseer}
                       alt='nextjs icon'
                       className='w-full h-8'
                     />
-                    <span className='font-medium text-lg'>Trusted</span>
+                    <span className='font-medium text-lg'>CodeSeer</span>
                   </div>
                 </>
               ))}
