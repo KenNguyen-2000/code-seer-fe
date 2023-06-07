@@ -64,7 +64,7 @@ const Contact = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link href='/about' className={styles.nav__list__item}>
+                      <Link href='/welcome' className={styles.nav__list__item}>
                         About us
                       </Link>
                     </li>

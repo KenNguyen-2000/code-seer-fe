@@ -73,7 +73,7 @@ const HeaderBar = ({ location }: any) => {
                 </li>
                 <li>
                   <Link
-                    href={'about'}
+                    href={'/welcome'}
                     className={styles.nav__list__item}
                     style={{
                       background:

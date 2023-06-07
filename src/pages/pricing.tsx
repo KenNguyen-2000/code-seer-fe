@@ -6,19 +6,21 @@ import React from 'react';
 const Pricing = () => {
   const items = new Array(3).fill({
     type: 'Personal',
-    price: 500,
+    price: 5,
     features: [
       {
-        label: 'Standard Dummy Text',
-        description: 'There are many variation of Lorem ipsum available',
+        label: 'Organization Management',
+        description:
+          'Create your own organization and collab with other memebers',
       },
       {
-        label: 'Standard Dummy Text',
-        description: 'There are many variation of Lorem ipsum available',
+        label: 'Workplace Management',
+        description:
+          'Divide your organization into multiple domain for specific purpose',
       },
       {
-        label: 'Standard Dummy Text',
-        description: 'There are many variation of Lorem ipsum available',
+        label: 'Dependency Map Generation',
+        description: 'Unlimited auto-generated Review Maps',
       },
     ],
   });
