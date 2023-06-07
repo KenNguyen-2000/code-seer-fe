@@ -9,6 +9,7 @@ import styles from './earth-rotate.module.scss';
 const EarthRotate = () => {
   useEffect(() => {
     var canvReference = document.getElementById('earth') as HTMLCanvasElement;
+    if (!canvReference) return;
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, 1000 / 1000, 0.1, 1000);
     var renderer = new THREE.WebGLRenderer({
@@ -96,13 +97,18 @@ const EarthRotate = () => {
 	  The thing is - we could, but requestAnimationFrame has a number of advantages. 
 	  Perhaps the most important one is that it pauses when the user navigates to another browser tab, hence not wasting their precious processing power and battery life.
 	*/
+    let myReq: any;
     function render() {
-      requestAnimationFrame(render);
+      myReq = requestAnimationFrame(render);
       earth.rotation.x += 0.005;
       earth.rotation.y += 0.005;
       renderer.render(scene, camera);
     }
     render();
+
+    return () => {
+      window.cancelAnimationFrame(myReq);
+    };
   }, []);
 
   return <canvas id='earth' className={styles.earth}></canvas>;

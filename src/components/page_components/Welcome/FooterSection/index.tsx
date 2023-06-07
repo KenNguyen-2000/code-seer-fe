@@ -134,7 +134,11 @@ const FooterSection = () => {
                         </div>
                       </div>
                       <div className={styles.framework__card__content}>
-                        <Image height={20} src={logo} alt='codeseer' />
+                        <Image
+                          className='h-5 w-auto'
+                          src={logo}
+                          alt='codeseer'
+                        />
                         <span className='w-[1px] h-[1px] ml-[11px] mt-[23px]'></span>
                         <p className='text-sm font-semibold tracking-[-.005625rem]'>
                           Dep Map
@@ -154,7 +158,11 @@ const FooterSection = () => {
                         </div>
                       </div>
                       <div className={styles.framework__card__content}>
-                        <Image height={20} src={logo} alt='codeseer' />
+                        <Image
+                          className='h-5 w-auto'
+                          src={logo}
+                          alt='codeseer'
+                        />
                         <span className='w-[1px] h-[1px] ml-[11px] mt-[23px]'></span>
                         <p className='text-sm font-semibold tracking-[-.005625rem]'>
                           Dep Map
@@ -174,7 +182,11 @@ const FooterSection = () => {
                         </div>
                       </div>
                       <div className={styles.framework__card__content}>
-                        <Image height={20} src={logo} alt='codeseer' />
+                        <Image
+                          className='h-5 w-auto'
+                          src={logo}
+                          alt='codeseer'
+                        />
                         <span className='w-[1px] h-[1px] ml-[11px] mt-[23px]'></span>
                         <p className='text-sm font-semibold tracking-[-.005625rem]'>
                           Dep Map
@@ -194,7 +206,11 @@ const FooterSection = () => {
                         </div>
                       </div>
                       <div className={styles.framework__card__content}>
-                        <Image height={20} src={logo} alt='codeseer' />
+                        <Image
+                          className='h-5 w-auto'
+                          src={logo}
+                          alt='codeseer'
+                        />
                         <span className='w-[1px] h-[1px] ml-[11px] mt-[23px]'></span>
                         <p className='text-sm font-semibold tracking-[-.005625rem]'>
                           Dep Map
