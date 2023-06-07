@@ -25,6 +25,7 @@ import FirstSection from './page_components/Welcome/FirstSection';
 import HeaderBar from './page_components/Welcome/HeaderBar';
 import ThirdSection from './page_components/Welcome/ThirdSection';
 import FourthSection from './page_components/Welcome/FourthSection';
+import EarthRotate from './common/EarthRotate';
 
 export {
   ButtonOutline,
@@ -54,4 +55,5 @@ export {
   HeaderBar,
   ThirdSection,
   FourthSection,
+  EarthRotate,
 };

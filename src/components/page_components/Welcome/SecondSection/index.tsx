@@ -1,8 +1,10 @@
 import React from 'react';
 import styles from './second-section.module.scss';
-import { ClockIcon } from '@/components/icons';
+import { ClockIcon, CodeCircle, UsersIcon } from '@/components/icons';
 import Image from 'next/image';
 import codeseer from '/public/codeseer-logo.svg';
+import DeveloperEditor from '../DeveloperEditor';
+import DevelopBrowser from '../DevelopBrowser';
 
 const SecondSection = () => {
   return (
@@ -29,43 +31,49 @@ const SecondSection = () => {
       </div>
       <div>
         <div className={styles.develop__demo}>
-          <div className={styles.develop__demo__windows}></div>
+          <div className={styles.develop__demo__windows}>
+            <DeveloperEditor />
+            <DevelopBrowser />
+          </div>
           <div className={styles.develop__demo__benefits}>
             <div className={styles.develop__demo__benefits__item}>
               <div className={styles.icon__wrapper}>
                 <ClockIcon />
               </div>
               <h5 className={styles.small__heading}>
-                <span>The complete toolkit for the Web</span>
+                <span>Time Efficiency</span>
               </h5>
               <p className={styles.paragraph}>
-                Everything you need to build your site exactly how you imagine,
-                from automatic API handling to built-in image and performance
-                optimizations.
+                Our intuitive interface and interactive diagrams significantly
+                reduce the time required to understand complex codebases. Spend
+                more time developing and less time grappling with unfamiliar
+                code.
               </p>
             </div>
             <div className={styles.develop__demo__benefits__item}>
               <div className={styles.icon__wrapper}>
-                <ClockIcon />
+                <CodeCircle />
               </div>
               <h5 className={styles.small__heading}>
-                <span>Easy integration with your backend</span>
+                <span>Easy integrate with your codebase</span>
               </h5>
               <p className={styles.paragraph}>
-                Connect your pages to any data source, headless CMS, or API and
-                make it work in everyone’s dev environment.
+                CodeSeer seamlessly integrates with your existing GitHub
+                repositories, eliminating the need for additional setup or data
+                migration.
               </p>
             </div>
             <div className={styles.develop__demo__benefits__item}>
               <div className={styles.icon__wrapper}>
-                <ClockIcon />
+                <UsersIcon />
               </div>
               <h5 className={styles.small__heading}>
-                <span>End-to-end testing on Localhost</span>
+                <span>Enhanced Collaboration</span>
               </h5>
               <p className={styles.paragraph}>
-                From caching to Serverless Functions, all our cloud primitives
-                work perfectly on localhost.
+                With CodeSeer, everyone can have a shared understanding of the
+                codebase, leading to better communication and accelerated
+                development cycles.
               </p>
             </div>
           </div>

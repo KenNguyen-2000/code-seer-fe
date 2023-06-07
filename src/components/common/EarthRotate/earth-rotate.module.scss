@@ -1,0 +1,17 @@
+.earth {
+  background: transparent;
+  width: 1000px;
+  height: 1000px;
+  touch-action: manipulation;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 50%;
+    width: 100%;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent 0, #fff 60%);
+  }
+}

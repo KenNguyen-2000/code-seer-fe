@@ -49,7 +49,9 @@ const HeaderBar = ({ location }: any) => {
                     className={styles.nav__list__item}
                     style={{
                       background:
-                        location === 'home' ? 'rgba(0, 0, 0, 0.1)' : '',
+                        location === 'home'
+                          ? 'rgba(0, 0, 0, 0.1)'
+                          : 'transparent',
                     }}
                   >
                     Home
@@ -61,7 +63,9 @@ const HeaderBar = ({ location }: any) => {
                     className={styles.nav__list__item}
                     style={{
                       background:
-                        location === 'features' ? 'rgba(0, 0, 0, 0.1)' : '',
+                        location === 'features'
+                          ? 'rgba(0, 0, 0, 0.1)'
+                          : 'transparent',
                     }}
                   >
                     Features
@@ -73,7 +77,9 @@ const HeaderBar = ({ location }: any) => {
                     className={styles.nav__list__item}
                     style={{
                       background:
-                        location === 'about' ? 'rgba(0, 0, 0, 0.1)' : '',
+                        location === 'about'
+                          ? 'rgba(0, 0, 0, 0.1)'
+                          : 'transparent',
                     }}
                   >
                     About us
@@ -85,7 +91,9 @@ const HeaderBar = ({ location }: any) => {
                     className={styles.nav__list__item}
                     style={{
                       background:
-                        location === 'pricing' ? 'rgba(0, 0, 0, 0.1)' : '',
+                        location === 'pricing'
+                          ? 'rgba(0, 0, 0, 0.1)'
+                          : 'transparent',
                     }}
                   >
                     Pricing
@@ -97,7 +105,9 @@ const HeaderBar = ({ location }: any) => {
                     className={styles.nav__list__item}
                     style={{
                       background:
-                        location === 'contact' ? 'rgba(0, 0, 0, 0.1)' : '',
+                        location === 'contact'
+                          ? 'rgba(0, 0, 0, 0.1)'
+                          : 'transparent',
                     }}
                   >
                     Contact

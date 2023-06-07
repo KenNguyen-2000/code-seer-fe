@@ -36,15 +36,17 @@ const FirstSection = () => {
         </div>
         <h2 className={styles.hero__description + ' text-2xl'}>
           <span>
-            Vercel is the platform for frontend developers, providing the speed
-            and reliability innovators need to create at the moment of
-            inspiration.
+            CodeSeer is the platform for developers, providing the speed and
+            reliability innovators need to understand and collaborate on
+            codebase.
           </span>
         </h2>
         <div className={styles.hero__btns}>
           <div className='flex flex-wrap'>
             <div className='p-3'>
-              <ButtonFilled className='rounded-md'>Start Depoying</ButtonFilled>
+              <ButtonFilled className='rounded-md'>
+                Start Generating
+              </ButtonFilled>
             </div>
             <div className='p-3'>
               <ButtonOutline
@@ -66,32 +68,88 @@ const FirstSection = () => {
           </div>
           <div className='flex flex-col gap-6'>
             <div className={styles.testimonials__brandsDesktop}>
-              {new Array(5).fill('').map((item, index) => (
-                <>
-                  <div key={index} className='mx-6 flex items-center gap-2'>
-                    <Image
-                      src={codeseer}
-                      alt='nextjs icon'
-                      className='w-full h-8'
-                    />
-                    <span className='font-medium text-lg'>CodeSeer</span>
-                  </div>
-                </>
-              ))}
+              <div className='mx-6 flex items-center gap-2'>
+                <Image
+                  src={codeseer}
+                  alt='nextjs icon'
+                  className='w-full h-8'
+                />
+                <span className='font-medium text-lg'>CodeSeer</span>
+              </div>
+              <div className='mx-6 flex items-center gap-2'>
+                <Image
+                  src={codeseer}
+                  alt='nextjs icon'
+                  className='w-full h-8'
+                />
+                <span className='font-medium text-lg'>CodeSeer</span>
+              </div>
+              <div className='mx-6 flex items-center gap-2'>
+                <Image
+                  src={codeseer}
+                  alt='nextjs icon'
+                  className='w-full h-8'
+                />
+                <span className='font-medium text-lg'>CodeSeer</span>
+              </div>
+              <div className='mx-6 flex items-center gap-2'>
+                <Image
+                  src={codeseer}
+                  alt='nextjs icon'
+                  className='w-full h-8'
+                />
+                <span className='font-medium text-lg'>CodeSeer</span>
+              </div>
+              <div className='mx-6 flex items-center gap-2'>
+                <Image
+                  src={codeseer}
+                  alt='nextjs icon'
+                  className='w-full h-8'
+                />
+                <span className='font-medium text-lg'>CodeSeer</span>
+              </div>
             </div>
             <div className={styles.testimonials__brandsDesktop}>
-              {new Array(5).fill('').map((item, index) => (
-                <>
-                  <div key={index} className='mx-6 flex items-center gap-2'>
-                    <Image
-                      src={codeseer}
-                      alt='nextjs icon'
-                      className='w-full h-8'
-                    />
-                    <span className='font-medium text-lg'>CodeSeer</span>
-                  </div>
-                </>
-              ))}
+              <div className='mx-6 flex items-center gap-2'>
+                <Image
+                  src={codeseer}
+                  alt='nextjs icon'
+                  className='w-full h-8'
+                />
+                <span className='font-medium text-lg'>CodeSeer</span>
+              </div>
+              <div className='mx-6 flex items-center gap-2'>
+                <Image
+                  src={codeseer}
+                  alt='nextjs icon'
+                  className='w-full h-8'
+                />
+                <span className='font-medium text-lg'>CodeSeer</span>
+              </div>
+              <div className='mx-6 flex items-center gap-2'>
+                <Image
+                  src={codeseer}
+                  alt='nextjs icon'
+                  className='w-full h-8'
+                />
+                <span className='font-medium text-lg'>CodeSeer</span>
+              </div>
+              <div className='mx-6 flex items-center gap-2'>
+                <Image
+                  src={codeseer}
+                  alt='nextjs icon'
+                  className='w-full h-8'
+                />
+                <span className='font-medium text-lg'>CodeSeer</span>
+              </div>
+              <div className='mx-6 flex items-center gap-2'>
+                <Image
+                  src={codeseer}
+                  alt='nextjs icon'
+                  className='w-full h-8'
+                />
+                <span className='font-medium text-lg'>CodeSeer</span>
+              </div>
             </div>
           </div>
         </div>

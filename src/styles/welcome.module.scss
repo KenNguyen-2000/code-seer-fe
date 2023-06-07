@@ -1,0 +1,50 @@
+@import '@/utils/sass/baseVariable';
+
+.ship__section__stats {
+  background: #fafafa;
+  border-top: 1px solid #eaeaea;
+  border-bottom: 1px solid #eaeaea;
+  position: relative;
+}
+
+.stats__statistics {
+  margin: 0 auto;
+  max-width: calc($screenWidth + calc(2 * 24px));
+  padding: 24px 0;
+  background-color: transparent;
+}
+
+.stats__stats {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.stats__stats__item {
+  border-right: 1px solid var(--borderColor);
+  padding: 0 33px;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.stats__highlight {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.8), #000);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: calc(58px + (60 - 58) * ((100vw - 500px) / (1440 - 320)));
+  line-height: 1.14em;
+  letter-spacing: -0.05em;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+}
+
+.stats__description {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #666;
+}

@@ -1,0 +1,125 @@
+.wrapper {
+  max-width: 100%;
+  position: relative;
+  z-index: 1;
+  top: -110px;
+}
+
+.container {
+  width: 100%;
+  height: auto;
+  -webkit-box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  -moz-box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  max-width: 100%;
+  color: #000;
+  position: relative;
+  border-radius: 5px;
+  background: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e5e5e5;
+}
+
+.browser__header {
+  width: 100%;
+  flex-basis: 32px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.window__traffic {
+  margin-left: 12px;
+  display: block;
+}
+
+.window__icon {
+  border-radius: 50%;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  & + .window__icon {
+    margin-left: 8px;
+  }
+}
+
+.window__close {
+  background-color: #ff5f56;
+}
+.window__minimize {
+  background-color: #ffbd2e;
+}
+
+.window__fullscreen {
+  background-color: #27c93f;
+}
+
+.window__title {
+  color: #666;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: 32px;
+  left: 0;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.window__browser__bar {
+  flex: 1 1;
+  color: #000;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.browser__spacer {
+  flex-basis: 140px;
+  flex-shrink: 0;
+}
+
+.browser__input {
+  flex: 1 1;
+  background: #fafafa;
+  border-radius: 3px;
+  height: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 12px;
+  position: relative;
+}
+
+.browser__url {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.browser__placeholder {
+  display: inline-flex;
+  width: 12px;
+}
+
+.browser__body {
+  flex: 1 1;
+  width: 100%;
+  overflow: auto;
+  & > svg {
+    shape-rendering: crispEdges;
+    fill: none;
+    width: 1000;
+  }
+}
+
+@media (min-width: 480px) {
+  .wrapper {
+    max-width: 90%;
+    left: 10%;
+  }
+}

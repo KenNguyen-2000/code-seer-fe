@@ -23,6 +23,9 @@ import TypescriptFileIcon from './TypescriptFileIcon';
 import MessageIcon from './MessageIcon';
 import BrandSafariIcon from './BrandSafariIcon';
 import LogoutIcon from './Logout';
+import CodeCircle from './CodeCircle';
+import UsersIcon from './UsersIcon';
+import AppsIcon from './AppsIcon';
 
 export {
   BellFilledIcon,
@@ -50,4 +53,7 @@ export {
   MessageIcon,
   BrandSafariIcon,
   LogoutIcon,
+  CodeCircle,
+  UsersIcon,
+  AppsIcon,
 };

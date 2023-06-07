@@ -1,0 +1,136 @@
+.wrapper {
+  max-width: 100%;
+}
+
+.window__window {
+  width: 100%;
+  height: 300px;
+  -webkit-box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  -moz-box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  max-width: 100%;
+  color: #000;
+  position: relative;
+  border-radius: 5px;
+  background: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.window__header {
+  width: 100%;
+  flex-basis: 32px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.window__traffic {
+  margin-left: 12px;
+  display: block;
+}
+
+.window__icon {
+  border-radius: 50%;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  & + .window__icon {
+    margin-left: 8px;
+  }
+}
+
+.window__close {
+  background-color: #ff5f56;
+}
+.window__minimize {
+  background-color: #ffbd2e;
+}
+
+.window__fullscreen {
+  background-color: #27c93f;
+}
+
+.window__title {
+  color: #666;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: 32px;
+  left: 0;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.window__tabs__wrapper {
+  display: flex;
+  left: 80px;
+  position: absolute;
+  bottom: -1px;
+}
+
+.window__tabs__tab {
+  border-left: 1px solid #eaeaea;
+  border-right: 1px solid #eaeaea;
+  height: 32px;
+  display: inline-flex;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 175ms ease-in-out;
+  border-bottom: 1px solid #fff;
+  background: #fff !important;
+}
+
+.window__body {
+  flex: 1 1;
+  width: 100%;
+  overflow: auto;
+}
+
+.editor__wrapper {
+  height: 100%;
+  display: flex;
+  font-family: 'Space Mono', 'Roboto Mono', Menlo, Monaco, Lucida Console,
+    Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace;
+  font-size: 15px;
+  white-space: pre;
+  line-height: 24px;
+}
+
+.editor__lines__background {
+  background: #fafafa;
+  padding: 12px 6px;
+  text-align: right;
+  color: #999;
+}
+
+.editor__lines {
+  width: 12px;
+}
+
+.editor__main {
+  padding: 12px;
+}
+
+.token__k {
+  color: #000;
+  font-weight: 700;
+}
+
+.token__p {
+  color: #000;
+}
+
+.token__n {
+  color: #0a72ef;
+  font-weight: 700;
+}
+
+@media (min-width: 480px) {
+  .wrapper {
+    max-width: 90%;
+  }
+}
