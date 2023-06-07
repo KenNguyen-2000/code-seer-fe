@@ -9,6 +9,7 @@ import {
   SearchIcon,
 } from '@/components/icons';
 import { useRouter } from 'next/router';
+import ArrowBadgeUp from '@/components/icons/ArrowBadgeUp';
 
 const Navbar: React.FC = () => {
   const router = useRouter();
@@ -44,8 +45,11 @@ const Navbar: React.FC = () => {
         <button className='text-white hover:scale-110 transition ease-out'>
           <BellFilledIcon />
         </button>
-        <button className='text-white hover:scale-110 transition ease-out'>
-          <PlusIcon />
+        <button
+          className='text-white hover:scale-110 transition ease-out border border-white p-[1px] rounded-full'
+          onClick={() => router.push('/pricing')}
+        >
+          <ArrowBadgeUp />
         </button>
         <button
           onClick={handleLogout}

@@ -1,9 +1,13 @@
+'use client';
+
 import Image from 'next/image';
 import React from 'react';
 import PricingIcon from '/public/brand-github-copilot.svg';
 import CheckFilled from '/public/circle-check-filled.svg';
 import ButtonFilled from '../ButtonFilled';
 import styles from './PricingCard.module.scss';
+import useUser from '@/hooks/useUser';
+import { useRouter } from 'next/router';
 
 interface IPricingCard {
   type: string;
@@ -17,6 +21,8 @@ interface IPricingCard {
 }
 
 const PricingCard: React.FC<IPricingCard> = ({ type, price, features }) => {
+  const router = useRouter();
+  const user: any = useUser();
   return (
     <div className={styles.wrapper}>
       <h2 className='font-semibold text-3xl text-primary_blue '>{type}</h2>
@@ -55,7 +61,10 @@ const PricingCard: React.FC<IPricingCard> = ({ type, price, features }) => {
         ))}
       </section>
 
-      <ButtonFilled className='w-full rounded-lg uppercase tracking-widest'>
+      <ButtonFilled
+        className='w-full rounded-lg uppercase tracking-widest'
+        onClick={() => router.push(user !== null ? '/contact' : '/login')}
+      >
         Subscribe
       </ButtonFilled>
     </div>

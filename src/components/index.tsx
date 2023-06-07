@@ -26,6 +26,7 @@ import HeaderBar from './page_components/Welcome/HeaderBar';
 import ThirdSection from './page_components/Welcome/ThirdSection';
 import FourthSection from './page_components/Welcome/FourthSection';
 import EarthRotate from './common/EarthRotate';
+import ArrowBadgeUp from './icons/ArrowBadgeUp';
 
 export {
   ButtonOutline,
@@ -56,4 +57,5 @@ export {
   ThirdSection,
   FourthSection,
   EarthRotate,
+  ArrowBadgeUp,
 };
