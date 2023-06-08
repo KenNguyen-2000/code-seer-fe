@@ -44,3 +44,9 @@ export const retrieveMapById = async (mapId: string) => {
 
   return res.data;
 };
+
+export const deleteMapVersion = async (versionId: string) => {
+  const res = await interceptor.delete(`${mapEndpoint}/${versionId}`);
+
+  return res.data;
+};

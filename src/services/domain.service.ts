@@ -20,16 +20,27 @@ export const retrieveADomain = async (domainId: string) => {
   return res.data;
 };
 
+export const deleteDomain = async (domainId: string) => {
+  const res = await interceptor.delete(`/domains/${domainId}`);
+
+  return res.data;
+};
+
 export const retrieveMaps = async (domainId: string) => {
   const res = await interceptor.get(`/domains/${domainId}/maps`);
 
   return res.data;
 };
 
-export const runWorkflow = async ({ owner, repository }: IRunWorkflow) => {
+export const runWorkflow = async ({
+  owner,
+  repository,
+  version,
+}: IRunWorkflow) => {
   const res = await interceptor.post('/domains/run-workflow', {
     owner,
     repository,
+    version,
   });
 
   return res.data;

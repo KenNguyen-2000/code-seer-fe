@@ -27,6 +27,8 @@ import ThirdSection from './page_components/Welcome/ThirdSection';
 import FourthSection from './page_components/Welcome/FourthSection';
 import EarthRotate from './common/EarthRotate';
 import ArrowBadgeUp from './icons/ArrowBadgeUp';
+import InputModal from './common/InputModal';
+import ConfirmModal from './common/ConfirmModal';
 
 export {
   ButtonOutline,
@@ -58,4 +60,6 @@ export {
   FourthSection,
   EarthRotate,
   ArrowBadgeUp,
+  InputModal,
+  ConfirmModal,
 };

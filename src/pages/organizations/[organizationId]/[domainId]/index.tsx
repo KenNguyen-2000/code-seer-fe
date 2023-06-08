@@ -80,6 +80,7 @@ import { fetchAnOrganization } from '@/redux/thunks/organization.thunk';
 import { fetchDomainById } from '@/redux/thunks/domain.thunk';
 import Head from 'next/head';
 import styles from './dependency-map.module.scss';
+import InputModal from '@/components/common/InputModal';
 
 const padding = 20;
 const gap = 25;
@@ -117,6 +118,7 @@ function Codebase() {
   const [explorer, setExplorer] = useState<any[]>([]);
   const [workflowRunning, setWorkflowRunning] = useState(false);
   const [showRedirect, setShowRedirect] = useState(false);
+  const [showInputModal, setShowInputModal] = useState(false);
   const [floatingBtns, setFloatingBtns] = useState({
     isShown: false,
     position: {
@@ -775,11 +777,11 @@ function Codebase() {
   //   }
   // };
 
-  const handleRunWorkflow = async () => {
+  const handleRunWorkflow = async (version: string) => {
     try {
       const owner = domain?.domain.repository.split('/')[0] as string;
       const repository = domain?.domain.repository.split('/')[1] as string;
-      const res = await runWorkflow({ owner, repository });
+      const res = await runWorkflow({ owner, repository, version });
       if (res.success) {
         toast.success('Run workflow success');
         setShowRedirect(true);
@@ -845,6 +847,12 @@ function Codebase() {
       <Head>
         <title>CodeSeer: Dependency Maps</title>
       </Head>
+      <InputModal
+        isShown={showInputModal}
+        closeModal={() => setShowInputModal(false)}
+        action={handleRunWorkflow}
+        title={'Enter map version'}
+      />
       <section className='w-full h-screen flex overflow-hidden'>
         <div className='flex-grow w-full h-full flex flex-col relative'>
           <header className='h-[80px] px-7 py-6 flex justify-between bg-[#F7F8FA] border-b-2 border-[#E3E3E3] drop-shadow-md'>
@@ -882,7 +890,7 @@ function Codebase() {
               <main className='flex flex-col grow w-full h-screen justify-center items-center relative'>
                 <ButtonOutline
                   className='rounded-md'
-                  onClick={handleRunWorkflow}
+                  onClick={() => setShowInputModal(true)}
                 >
                   Run work flow
                 </ButtonOutline>

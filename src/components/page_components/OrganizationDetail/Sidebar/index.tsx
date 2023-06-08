@@ -14,7 +14,11 @@ import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { joinTeam, retrieveTeams, teamEndpoint } from '@/services/team.service';
 import { ITeam } from '@/interfaces/team.interface';
-import { domainEndpoint, retrieveDomains } from '@/services/domain.service';
+import {
+  deleteDomain,
+  domainEndpoint,
+  retrieveDomains,
+} from '@/services/domain.service';
 import { IDomain } from '@/interfaces/domain.interface';
 import CreateTeamForm from '../CreateTeamForm';
 import CreateDomainForm from '../CreateDomainForm';
@@ -22,6 +26,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/reduxHooks';
 import ButtonFilled from '@/components/common/ButtonFilled';
 import { toast } from 'react-toastify';
 import Loader from '@/components/common/Loader';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 const Sidebar = () => {
   const router = useRouter();
@@ -30,9 +35,11 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [domainsCollapsed, setDomainsCollapsed] = useState(false);
   const [teamsCollapsed, setTeamsCollapsed] = useState(false);
+  const [selectedDomain, setSelectedDomain] = useState<IDomain>();
 
   const [showCreateTeam, setShowCreateTeam] = useState(false);
   const [showCreateDomain, setShowCreateDomain] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const {
     data: teams,
@@ -59,6 +66,17 @@ const Sidebar = () => {
     } catch (error) {}
   };
 
+  const handleDeleteDomain = async () => {
+    if (!selectedDomain) return;
+    try {
+      const res = await deleteDomain(selectedDomain.id);
+
+      if (res.success) toast.success('Delete domain successfully!');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // if (isTeamLoading || isDomainsLoading) return <h1>Loading</h1>;
   useEffect(() => {
     window.addEventListener('resize', function (e) {
@@ -73,6 +91,12 @@ const Sidebar = () => {
 
   return (
     <>
+      <ConfirmModal
+        isShown={showModal}
+        closeModal={() => setShowModal(false)}
+        action={handleDeleteDomain}
+        title='Delete domain'
+      />
       {showCreateTeam && (
         <CreateTeamForm
           setIsShown={setShowCreateTeam}
@@ -153,7 +177,10 @@ const Sidebar = () => {
                   <Loader width='40px' height='40px' borderWidth='6px' />
                 ) : (
                   domains?.data?.map((domain: any) => (
-                    <li className='text-md_gray' key={domain.id}>
+                    <li
+                      className='text-md_gray flex justify-between group'
+                      key={domain.id}
+                    >
                       <button
                         className='w-fit hover:underline hover:font-semibold hover:text-dark_blue'
                         onClick={() =>
@@ -163,6 +190,15 @@ const Sidebar = () => {
                         }
                       >
                         {domain.name}
+                      </button>
+                      <button
+                        className='hidden group-hover:flex bg-red-600 hover:bg-red-500 px-2 rounded text-white justify-center items-center'
+                        onClick={() => {
+                          setSelectedDomain(domain);
+                          setShowModal(true);
+                        }}
+                      >
+                        <span>x</span>
                       </button>
                     </li>
                   ))

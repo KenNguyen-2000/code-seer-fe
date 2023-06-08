@@ -34,15 +34,7 @@ const OrganizationDetail = () => {
           </h1>
           <ul className='flex gap-3'>
             {new Array(3).fill('').map((item, index) => (
-              <li
-                key={index}
-                role='button'
-                onClick={() => {
-                  router.push(
-                    `/organizations/${organizationId}/dependency-map/${index}`
-                  );
-                }}
-              >
+              <li key={index}>
                 <Image src={MapVersion} alt='Dependency Map' priority={true} />
               </li>
             ))}

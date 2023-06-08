@@ -27,6 +27,7 @@ export interface ICreateDomain {
 export interface IRunWorkflow {
   owner: string;
   repository: string;
+  version: string;
 }
 
 export interface IWorkflows {
