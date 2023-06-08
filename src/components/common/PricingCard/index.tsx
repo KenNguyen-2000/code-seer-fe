@@ -63,7 +63,13 @@ const PricingCard: React.FC<IPricingCard> = ({ type, price, features }) => {
 
       <ButtonFilled
         className='w-full rounded-lg uppercase tracking-widest'
-        onClick={() => router.push(user !== null ? '/contact' : '/login')}
+        onClick={() =>
+          router.push(
+            user !== null
+              ? (process.env.NEXT_PUBLIC_PRICING_FORM as string)
+              : '/login'
+          )
+        }
       >
         Subscribe
       </ButtonFilled>

@@ -138,11 +138,21 @@ const ActionBar = ({ explorer }: any) => {
       const repository = domain?.domain.repository.split('/')[1] as string;
       const res = await runWorkflow({ owner, repository, version });
       if (res.success) {
-        toast.success('Run workflow success');
+        toast.success('Run workflow success! Please wait for redirect!');
       }
 
       setWorkflowRunning(true);
       setTimeout(() => {
+        const aLink = document.createElement('a');
+        aLink.href = `https://github.com/${owner}/${repository}/actions`;
+        aLink.target = '_blank';
+        aLink.rel = 'noopener noreferrer';
+        aLink.style.position = 'absolute';
+        aLink.style.visibility = 'invisible';
+
+        document.body.appendChild(aLink);
+        aLink.click();
+        document.body.removeChild(aLink);
         handleTrackingWorkflow();
       }, 15000);
     } catch (error) {

@@ -16,6 +16,7 @@ import {
 import useUser from '@/hooks/useUser';
 import PrivateRoute from '@/components/common/PrivateRoute';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 const organizationTypes = [
   'Onboarding',
@@ -25,6 +26,8 @@ const organizationTypes = [
 ];
 
 const OrganizationList = () => {
+  const router = useRouter();
+
   const [selectedType, setSelectedType] = useState(organizationTypes[0]);
   const [isShown, setIsShown] = useState(false);
   const { data, error, isLoading } = useSWR(
@@ -32,7 +35,8 @@ const OrganizationList = () => {
     retrieveOrganizations
   );
 
-  const user = useUser();
+  const user: any = useUser();
+  console.log(user);
 
   // if (isLoading) return <h1 className='text-2xl font-bold'>Loading...</h1>;
 
@@ -57,7 +61,11 @@ const OrganizationList = () => {
               className='underline text-primary_blue'
               href='#'
               type='button'
-              onClick={() => setIsShown(true)}
+              onClick={() =>
+                user.type === 'USER'
+                  ? router.push('/pricing')
+                  : setIsShown(true)
+              }
             >
               Create new
             </a>

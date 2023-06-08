@@ -119,7 +119,6 @@ function Codebase() {
   const [mapData, setMapData] = useState<IMainData>({ nodes: [], edges: [] });
   const [explorer, setExplorer] = useState<any[]>([]);
   const [workflowRunning, setWorkflowRunning] = useState(false);
-  const [showRedirect, setShowRedirect] = useState(false);
   const [showInputModal, setShowInputModal] = useState(false);
   const [floatingBtns, setFloatingBtns] = useState({
     isShown: false,
@@ -784,10 +783,20 @@ function Codebase() {
       const repository = domain?.domain.repository.split('/')[1] as string;
       const res = await runWorkflow({ owner, repository, version });
       if (res.success) {
-        toast.success('Run workflow success');
-        setShowRedirect(true);
+        toast.success('Run workflow success! Please wait for redirect!');
       }
+
       setTimeout(() => {
+        const aLink = document.createElement('a');
+        aLink.href = `https://github.com/${owner}/${repository}/actions`;
+        aLink.target = '_blank';
+        aLink.rel = 'noopener noreferrer';
+        aLink.style.position = 'absolute';
+        aLink.style.visibility = 'invisible';
+
+        document.body.appendChild(aLink);
+        aLink.click();
+        document.body.removeChild(aLink);
         handleTrackingWorkflow();
       }, 15000);
     } catch (error) {
@@ -898,16 +907,6 @@ function Codebase() {
                 >
                   Run work flow
                 </ButtonOutline>
-                {showRedirect && (
-                  <Link
-                    href={`https://github.com/${
-                      domain?.domain.repository.split('/')[0]
-                    }/${domain?.domain.repository.split('/')[1]}/actions`}
-                    className='hover:underline py-2'
-                  >
-                    View workflow progress
-                  </Link>
-                )}
               </main>
             ) : (
               <main className={styles.main__wrapper}>

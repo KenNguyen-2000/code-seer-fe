@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import { MutatorOptions } from 'swr';
 import useUser from '@/hooks/useUser';
 import ButtonFilled from '@/components/common/ButtonFilled';
+import Link from 'next/link';
 
 interface ICreateDomainForm {
   teams: ITeam[];
@@ -226,12 +227,14 @@ const CreateDomainForm = ({
                 ))}
               </ul>
             </button>
-            <a
-              href='https://github.com/apps/codeseer-bot/'
+            <Link
+              target='_blank'
+              rel='noopener noreferrer'
+              href={process.env.NEXT_PUBLIC_CODESEER_INSTALLATION as string}
               className='text-drark_blue underline'
             >
-              + Add new accounts/organizations
-            </a>
+              + Config CodeSeer bot installation
+            </Link>
           </div>
 
           <div className='flex flex-col gap-3 relative'>
@@ -266,12 +269,14 @@ const CreateDomainForm = ({
               </ul>
             </button>
 
-            <a
-              href='https://github.com/apps/magim-bot'
+            <Link
+              target='_blank'
+              rel='noopener noreferrer'
+              href={process.env.NEXT_PUBLIC_CODESEER_CONFIG as string}
               className='text-drark_blue underline'
             >
-              + Add more repsitories from this accounts/organizations
-            </a>
+              + Config repository accessible permission
+            </Link>
           </div>
           <div className='flex flex-col gap-3'>
             <label htmlFor='domain_directory' className='text-lg font-medium'>

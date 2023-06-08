@@ -48,7 +48,8 @@
 .form__wrapper {
   width: 600px;
   height: fit-content;
-  overflow-y: hidden;
+  max-height: 80vh;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   background-color: white;
