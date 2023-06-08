@@ -12,6 +12,7 @@ import styles from '@/styles/welcome.module.scss';
 import FooterSection from '@/components/page_components/Welcome/FooterSection';
 
 const WelcomePage = () => {
+  console.log('welcome');
   return (
     <>
       <Head>

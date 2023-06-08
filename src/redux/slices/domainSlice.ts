@@ -44,7 +44,14 @@ const domainSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchDepMaps.fulfilled, (state, action) => {
-        state.dependencyMaps = action.payload;
+        state.dependencyMaps = action.payload.sort(
+          (a: IDependencyMap, b: IDependencyMap) => {
+            const aDate = new Date(a.createdAt as string);
+            const bDate = new Date(b.createdAt as string);
+
+            return aDate.getTime() < bDate.getTime() ? 1 : -1;
+          }
+        );
         state.isLoading = false;
       })
       .addCase(fetchDepMaps.rejected, (state) => {

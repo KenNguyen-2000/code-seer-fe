@@ -90,6 +90,8 @@ function Codebase() {
   const router = useRouter();
   const { domainId, organizationId } = router.query;
 
+  const user: any = useUser();
+
   const dispatch = useAppDispatch();
   const domain: IDomain | undefined = useAppSelector(
     (state) => state.domain.domain
@@ -730,54 +732,53 @@ function Codebase() {
       workflowId: workflowId,
     });
 
-    if (workflow.status !== 'completed') {
-      setTimeout(() => {
-        handleGetWorkflow({
-          owner,
-          repository,
-          githubToken: githubToken,
-          workflowId: workflowId,
-        });
-      }, 30000);
-    }
-
     return workflow;
   };
 
-  // const handleTrackingWorkflow = async () => {
-  //   if (domain) {
-  //     try {
-  //       const owner = domain.repository.split('/')[0];
-  //       const repository = domain.repository.split('/')[1];
-  //       const res = await retrieveWorkflows({
-  //         owner,
-  //         repository,
-  //         githubToken: user.githubToken,
-  //       });
-  //       setWorkflowRunning(true);
+  const handleTrackingWorkflow = async () => {
+    if (domain) {
+      try {
+        const owner = domain.domain.repository.split('/')[0];
+        const repository = domain.domain.repository.split('/')[1];
+        const res = await retrieveWorkflows({
+          owner,
+          repository,
+          githubToken: user.githubToken,
+        });
+        setWorkflowRunning(true);
 
-  //       const { workflow_runs } = res;
-  //       const in_progress_workflows = workflow_runs.filter(
-  //         (workflow_run: any) => workflow_run.status !== 'completed'
-  //       );
+        const { workflow_runs } = res;
+        const in_progress_workflows = workflow_runs.filter(
+          (workflow_run: any) => workflow_run.status !== 'completed'
+        );
+        console.log('workflow runs: ', workflow_runs);
+        console.log('Inprogress', in_progress_workflows);
 
-  //       if (in_progress_workflows.length > 0) {
-  //         const workflow = await handleGetWorkflow({
-  //           owner,
-  //           repository,
-  //           githubToken: user.githubToken,
-  //           workflowId: in_progress_workflows[0].id,
-  //         });
-  //         if (workflow.status === 'completed') setWorkflowRunning(false);
-  //       }
-  //       setWorkflowRunning(false);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // };
+        if (in_progress_workflows.length > 0) {
+          let myTimer = setInterval(async () => {
+            const workflow = await handleGetWorkflow({
+              owner,
+              repository,
+              githubToken: user.githubToken,
+              workflowId: in_progress_workflows[0].id,
+            });
+
+            if (workflow.status === 'completed') {
+              setWorkflowRunning(false);
+              dispatch(fetchDepMaps(domain.domain.id));
+              clearInterval(myTimer);
+            }
+          }, 10000);
+        }
+        setWorkflowRunning(false);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   const handleRunWorkflow = async (version: string) => {
+    console.log('Hello ');
     try {
       const owner = domain?.domain.repository.split('/')[0] as string;
       const repository = domain?.domain.repository.split('/')[1] as string;
@@ -786,6 +787,9 @@ function Codebase() {
         toast.success('Run workflow success');
         setShowRedirect(true);
       }
+      setTimeout(() => {
+        handleTrackingWorkflow();
+      }, 15000);
     } catch (error) {
       console.log(error);
     }

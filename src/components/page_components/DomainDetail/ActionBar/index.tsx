@@ -4,21 +4,29 @@ import React, { useEffect, useRef, useState } from 'react';
 import FolderTree from '../FolderTree';
 import { useAppDispatch, useAppSelector } from '@/redux/reduxHooks';
 import { IDependencyMap } from '@/interfaces/dependency-map.interface';
-import { fetchMapById } from '@/redux/thunks/map.thunk';
+import { fetchDepMaps, fetchMapById } from '@/redux/thunks/map.thunk';
 
 import styles from './action-bar.module.scss';
 import { setCurMap } from '@/redux/slices/mapSlice';
 import { PlusIcon } from '@/components/icons';
 import { toast } from 'react-toastify';
-import { runWorkflow } from '@/services/domain.service';
-import { IDomain } from '@/interfaces/domain.interface';
+import {
+  retrieveWorkflowById,
+  retrieveWorkflows,
+  runWorkflow,
+} from '@/services/domain.service';
+import { IDomain, IWorkflow } from '@/interfaces/domain.interface';
 import InputModal from '@/components/common/InputModal';
 import { deleteMapVersion } from '@/services/map.service';
+import useUser from '@/hooks/useUser';
+import Loader from '@/components/common/Loader';
 
 const ActionBar = ({ explorer }: any) => {
   const dispatch = useAppDispatch();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const user: any = useUser();
 
   const domain: IDomain | undefined = useAppSelector(
     (state) => state.domain.domain
@@ -30,6 +38,7 @@ const ActionBar = ({ explorer }: any) => {
   const [dragging, setDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [showInputModal, setShowInputModal] = useState(false);
+  const [workflowRunning, setWorkflowRunning] = useState(false);
 
   const handleSwitchMap = (mapId: string) => {
     const exactMap = dependencyMaps.find((map) => map.id === mapId);
@@ -69,6 +78,60 @@ const ActionBar = ({ explorer }: any) => {
     setStartX(event.clientX);
   };
 
+  const handleGetWorkflow = async ({
+    owner,
+    repository,
+    githubToken,
+    workflowId,
+  }: IWorkflow) => {
+    const workflow = await retrieveWorkflowById({
+      owner,
+      repository,
+      githubToken: githubToken,
+      workflowId: workflowId,
+    });
+
+    return workflow;
+  };
+
+  const handleTrackingWorkflow = async () => {
+    console.log('Tracking ne');
+    if (domain) {
+      try {
+        const owner = domain.domain.repository.split('/')[0];
+        const repository = domain.domain.repository.split('/')[1];
+        const res = await retrieveWorkflows({
+          owner,
+          repository,
+          githubToken: user.githubToken,
+        });
+
+        const { workflow_runs } = res;
+        const in_progress_workflows = workflow_runs.filter(
+          (workflow_run: any) => workflow_run.status !== 'completed'
+        );
+
+        if (in_progress_workflows.length > 0) {
+          let myTimer = setInterval(async () => {
+            const workflow = await handleGetWorkflow({
+              owner,
+              repository,
+              githubToken: user.githubToken,
+              workflowId: in_progress_workflows[0].id,
+            });
+            if (workflow.status === 'completed') {
+              setWorkflowRunning(false);
+              dispatch(fetchDepMaps(domain.domain.id));
+              clearInterval(myTimer);
+            }
+          }, 10000);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   const handleRunWorkflow = async (version: string) => {
     try {
       const owner = domain?.domain.repository.split('/')[0] as string;
@@ -77,6 +140,11 @@ const ActionBar = ({ explorer }: any) => {
       if (res.success) {
         toast.success('Run workflow success');
       }
+
+      setWorkflowRunning(true);
+      setTimeout(() => {
+        handleTrackingWorkflow();
+      }, 15000);
     } catch (error) {
       console.log(error);
     }
@@ -110,11 +178,15 @@ const ActionBar = ({ explorer }: any) => {
           <div className='w-full text-center relative'>
             Version
             <button
-              className='absolute top-1/2 right-1 -translate-y-1/2'
+              className='absolute top-1/2 right-1 -translate-y-1/2 w-5 h-5'
               onClick={() => setShowInputModal(true)}
             >
               <span>
-                <PlusIcon className='h-5 w-5' />
+                {workflowRunning ? (
+                  <Loader />
+                ) : (
+                  <PlusIcon className='h-5 w-5' />
+                )}
               </span>
             </button>
           </div>
