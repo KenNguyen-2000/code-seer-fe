@@ -41,11 +41,11 @@ const deleteAnOrganization = async (
   return res.data;
 };
 
-const inviteMemberToOrganization = async (
-  url: string,
-  { organizationId, memberEmail }: IInviteMemberToOrg
-): Promise<AxiosResponse> => {
-  const res = await interceptor.post(url, {
+export const inviteMemberToOrganization = async ({
+  organizationId,
+  memberEmail,
+}: IInviteMemberToOrg) => {
+  const res = await interceptor.post(`${organizationEndpoint}/members/invite`, {
     organizationId,
     memberEmail,
   });
@@ -53,16 +53,15 @@ const inviteMemberToOrganization = async (
   return res.data;
 };
 
-export const joinOrganization = async (
-  url: string,
-  { invitationId, orgId }: IJoinOrg
-): Promise<AxiosResponse> => {
-  const res = await interceptor.get(url, {
+export const joinOrganization = async ({ invitationId, orgId }: IJoinOrg) => {
+  const res = await interceptor.get(`${organizationEndpoint}/members/join`, {
     params: {
       inv: invitationId,
       org: orgId,
     },
   });
+
+  console.log(res);
 
   return res.data;
 };

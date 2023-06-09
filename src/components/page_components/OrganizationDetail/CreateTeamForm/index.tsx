@@ -78,7 +78,7 @@ const CreateTeamForm = ({ setIsShown, orgId, mutate, teams }: any) => {
       />
       <form
         onSubmit={handleCreateTeam}
-        className='w-[600px] h-fit flex flex-col bg-white rounded-xl z-40 '
+        className='w-[600px] h-fit flex flex-col bg-white rounded-xl z-40 animate-scaleIn'
       >
         <div className=' p-6 border-b border-md_blue flex justify-between'>
           <h1 className='text-md_blue text-3xl font-semibold'>Create Team</h1>

@@ -26,6 +26,7 @@ import LogoutIcon from './Logout';
 import CodeCircle from './CodeCircle';
 import UsersIcon from './UsersIcon';
 import AppsIcon from './AppsIcon';
+import UserPlus from './UserPlus';
 
 export {
   BellFilledIcon,
@@ -56,4 +57,5 @@ export {
   CodeCircle,
   UsersIcon,
   AppsIcon,
+  UserPlus,
 };

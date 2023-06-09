@@ -18,7 +18,7 @@ const OrganizationCard: React.FC<IOrganizationCard> = ({ organization }) => {
     <div
       className={
         styles.wrapper +
-        ' w-full min-w-[300px] md:w-[300px] rounded-xl overflow-hidden relative'
+        ' w-full min-w-[300px] max-w-[400px] rounded-xl overflow-hidden relative'
       }
     >
       <div className='absolute left-0 top-0 bottom-0 w-6 bg-dark_blue'></div>

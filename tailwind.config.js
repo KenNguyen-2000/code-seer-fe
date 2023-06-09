@@ -17,6 +17,26 @@ module.exports = {
           'rgba(0, 0, 0, 0.1) 0px 6px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px',
         welcome_btn: '0px 6px 22px rgba(0, 0, 0, 0.1);',
       },
+      animation: {
+        scaleIn: 'scaleIn 200ms ease-in-out forwards',
+        scaleOut: 'scaleOut 200ms ease-in-out forwards',
+      },
+      keyframes: {
+        scaleIn: {
+          from: { opacity: 0, transform: 'scale(0.9)' },
+          to: { opacity: 1, transform: 'scale(1)' },
+        },
+        scaleOut: {
+          from: {
+            opacity: 1,
+            transform: 'scale(1)',
+          },
+          to: {
+            opacity: 0,
+            transform: 'scale(0.85)',
+          },
+        },
+      },
       colors: {
         navy: '#1C3879',
         beige: '#EAE3D2',

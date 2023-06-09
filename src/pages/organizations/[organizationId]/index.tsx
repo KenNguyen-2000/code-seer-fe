@@ -18,8 +18,10 @@ const OrganizationDetail = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(setDependencyMaps([]));
-    dispatch(fetchAnOrganization(organizationId as string));
+    if (organizationId) {
+      dispatch(setDependencyMaps([]));
+      dispatch(fetchAnOrganization(organizationId as string));
+    }
   }, [dispatch, organizationId]);
 
   return (

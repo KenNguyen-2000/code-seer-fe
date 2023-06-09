@@ -71,7 +71,7 @@ const OrganizationList = () => {
             </a>
           </div>
 
-          <div className='flex flex-wrap md:flex-nowrap flex-col md:flex-row gap-8 min-h-[150px] '>
+          <div className='grid grid-cols-1 justify-items-start md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 flex-col md:flex-row gap-8 min-h-[150px] '>
             {!isLoading
               ? data?.data?.map((organization: any) => (
                   <OrganizationCard

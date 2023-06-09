@@ -165,14 +165,14 @@ const CreateDomainForm = ({
   }, [selectedGithubOrg]);
 
   return (
-    <section className='fixed inset-0  py-14  flex justify-center z-20'>
+    <section className='fixed inset-0  py-14  flex justify-center z-20 '>
       <div
         className='backdrop-brightness-75 backdrop-blur-sm fixed inset-0 py-5 '
         onClick={closeModal}
       />
       <form
         onSubmit={handleCreateDomain}
-        className='w-[600px]   flex flex-col bg-white rounded-xl z-40 '
+        className='w-[600px]   flex flex-col bg-white rounded-xl z-40 animate-scaleIn'
       >
         <div className=' p-6 border-b border-md_blue flex justify-between'>
           <h1 className='text-md_blue text-3xl font-semibold'>Create Domain</h1>
