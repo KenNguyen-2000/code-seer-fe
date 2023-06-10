@@ -9,10 +9,23 @@ import {
   createNewOrganization,
   organizationEndpoint,
 } from '@/services/organization.service';
+import { IOrganization } from '@/interfaces';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
-const CreateOrgForm = ({ isShown, setIsShown }: any) => {
+interface ICreateOrgForm {
+  isShown?: boolean;
+  setIsShown: any;
+  mutate: any;
+  organizations: IOrganization[];
+}
+
+const CreateOrgForm = ({
+  isShown,
+  setIsShown,
+  mutate,
+  organizations,
+}: ICreateOrgForm) => {
   const labelDropdown = useRef<HTMLUListElement>(null);
   const [selectedLabel, setSelectedLabel] = useState('');
   const [value, setValue] = useState('');
@@ -100,6 +113,7 @@ const CreateOrgForm = ({ isShown, setIsShown }: any) => {
           name: organizationName.value,
           description: value,
         });
+        mutate({ ...organizations, ...res.data });
         closeModal();
       } catch (error) {
         console.log(error);

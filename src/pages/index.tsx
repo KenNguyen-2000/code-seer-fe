@@ -82,7 +82,7 @@ export default function Home() {
                 without guesswork through automatic visualizations. Instantly
                 map and automate your app’s services, code and code changes.
               </p>
-              <Link href='login' passHref>
+              <Link href='/welcome' passHref>
                 <ButtonOutline className='w-fit rounded-lg lg:mt-12 md:justify-self-end'>
                   Get Started
                 </ButtonOutline>

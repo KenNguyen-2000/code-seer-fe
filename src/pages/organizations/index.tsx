@@ -30,13 +30,12 @@ const OrganizationList = () => {
 
   const [selectedType, setSelectedType] = useState(organizationTypes[0]);
   const [isShown, setIsShown] = useState(false);
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR(
     organizationEndpoint,
     retrieveOrganizations
   );
 
   const user: any = useUser();
-  console.log(user);
 
   // if (isLoading) return <h1 className='text-2xl font-bold'>Loading...</h1>;
 
@@ -48,7 +47,14 @@ const OrganizationList = () => {
         <meta property='org:title' content='CodeSeer: Organization' />
       </Head>
       <main className='h-full px-10'>
-        {isShown && <CreateOrgForm isShown={isShown} setIsShown={setIsShown} />}
+        {isShown && (
+          <CreateOrgForm
+            isShown={isShown}
+            setIsShown={setIsShown}
+            mutate={mutate}
+            organizations={data?.data}
+          />
+        )}
         <section className='mb-8'>
           <h1 className='text-4xl text-dark_blue font-semibold mt-14 mb-8'>
             Your Organization

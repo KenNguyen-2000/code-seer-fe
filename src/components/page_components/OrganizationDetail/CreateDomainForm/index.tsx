@@ -108,29 +108,15 @@ const CreateDomainForm = ({
     const { domainName, domainDirectory } = event.target;
 
     try {
-      await mutate(
-        domainEndpoint,
-        createNewDomain({
-          teamId: selectedTeam?.team.id as string,
-          payload: {
-            name: domainName.value,
-            directory: domainDirectory.value,
-            repository: selectedRepo,
-          },
-        }),
-        {
-          optimisticData: [
-            ...domains,
-            {
-              teamId: selectedTeam?.id as string,
-              name: domainName.value,
-              directory: domainDirectory.value,
-              repository: selectedRepo,
-            },
-          ],
-          rollbackOnError: true,
-        } as MutatorOptions
-      );
+      const res = await createNewDomain({
+        teamId: selectedTeam?.team.id as string,
+        payload: {
+          name: domainName.value,
+          directory: domainDirectory.value,
+          repository: selectedRepo,
+        },
+      });
+      mutate({ ...domains, ...res.data });
 
       toast.success(`Create domain ${domainName.value} successfully!`, {
         autoClose: 2000,

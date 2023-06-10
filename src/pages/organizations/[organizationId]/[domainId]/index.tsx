@@ -784,23 +784,23 @@ function Codebase() {
       const res = await runWorkflow({ owner, repository, version });
       if (res.success) {
         toast.success('Run workflow success! Please wait for redirect!');
+        setTimeout(() => {
+          const aLink = document.createElement('a');
+          aLink.href = `https://github.com/${owner}/${repository}/actions`;
+          aLink.target = '_blank';
+          aLink.rel = 'noopener noreferrer';
+          aLink.style.position = 'absolute';
+          aLink.style.visibility = 'invisible';
+
+          document.body.appendChild(aLink);
+          aLink.click();
+          document.body.removeChild(aLink);
+          handleTrackingWorkflow();
+        }, 15000);
       }
-
-      setTimeout(() => {
-        const aLink = document.createElement('a');
-        aLink.href = `https://github.com/${owner}/${repository}/actions`;
-        aLink.target = '_blank';
-        aLink.rel = 'noopener noreferrer';
-        aLink.style.position = 'absolute';
-        aLink.style.visibility = 'invisible';
-
-        document.body.appendChild(aLink);
-        aLink.click();
-        document.body.removeChild(aLink);
-        handleTrackingWorkflow();
-      }, 15000);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      toast.error(error.data.error.name);
     }
   };
 
@@ -942,7 +942,7 @@ function Codebase() {
                             onClick={handleSaveTempMap}
                             className='rounded-md'
                           >
-                            Save
+                            Save State
                           </ButtonFilled>
                         </Panel>
                       </ReactFlow>

@@ -49,7 +49,7 @@ const Navbar: React.FC = () => {
       <div className={styles.left}>
         <button
           className='flex items-center gap-4'
-          onClick={() => router.push('/')}
+          onClick={() => router.push('/welcome')}
         >
           <Image src={CodeSeerLogo} alt='CodeSeer Logo' />
           <h3 className='font-semibold text-2xl'>CodeSeer</h3>
@@ -82,6 +82,7 @@ const Navbar: React.FC = () => {
                   onChange={(e) => setMemberEmail(e.target.value)}
                   value={inviteLink !== '' ? inviteLink : memberEmail}
                   disabled={inviteLink !== ''}
+                  required
                 />
                 <ButtonFilled
                   className='whitespace-nowrap rounded-md'

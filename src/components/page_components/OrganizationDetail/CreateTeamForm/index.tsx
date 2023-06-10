@@ -35,34 +35,15 @@ const CreateTeamForm = ({ setIsShown, orgId, mutate, teams }: any) => {
     event.preventDefault();
     const { teamName, teamLogin } = event.target;
     try {
-      // const res = await createNewTeam({
-      //   orgId,
-      //   payload: {
-      //     login: teamLogin.value,
-      //     name: teamName.value,
-      //   },
-      // });
+      const res = await createNewTeam({
+        orgId,
+        payload: {
+          login: teamLogin.value,
+          name: teamName.value,
+        },
+      });
 
-      await mutate(
-        teamEndpoint,
-        createNewTeam({
-          orgId,
-          payload: {
-            login: teamLogin.value,
-            name: teamName.value,
-          },
-        }),
-        {
-          optimisticData: [
-            ...teams,
-            {
-              login: teamLogin.value,
-              name: teamName.value,
-            },
-          ],
-          rollbackOnError: true,
-        } as MutatorOptions
-      );
+      mutate({ ...teams, ...res.data });
       // if (res.success) {
       closeModal();
       // }

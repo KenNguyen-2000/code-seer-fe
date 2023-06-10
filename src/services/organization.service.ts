@@ -6,6 +6,7 @@ import {
   IInviteMemberToOrg,
   IJoinOrg,
 } from '@/interfaces';
+import { toast } from 'react-toastify';
 
 export const organizationEndpoint = '/organizations';
 
@@ -23,7 +24,7 @@ export const retrieveAnOrganization = async (key: string) => {
 export const createNewOrganization = async (
   url: string,
   { login, description, name }: ICreateOrganization
-): Promise<AxiosResponse> => {
+) => {
   const res = await interceptor.post(url, {
     login,
     description,
@@ -32,11 +33,13 @@ export const createNewOrganization = async (
   return res.data;
 };
 
-const deleteAnOrganization = async (
-  url: string,
-  organizationId: string
-): Promise<AxiosResponse> => {
-  const res = await interceptor.delete(`${url}/${organizationId}`);
+export const deleteAnOrganization = async (organizationId: string) => {
+  const res = await interceptor.delete(
+    `${organizationEndpoint}/${organizationId}`
+  );
+
+  if (res.status >= 200 && res.status < 300)
+    toast.success('Delete organization successfully!');
 
   return res.data;
 };
