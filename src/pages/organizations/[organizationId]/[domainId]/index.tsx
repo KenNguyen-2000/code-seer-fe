@@ -783,7 +783,9 @@ function Codebase() {
       const repository = domain?.domain.repository.split('/')[1] as string;
       const res = await runWorkflow({ owner, repository, version });
       if (res.success) {
-        toast.success('Run workflow success! Please wait for redirect!');
+        toast.success('Run workflow success! Please wait for redirect!', {
+          autoClose: 15000,
+        });
         setTimeout(() => {
           const aLink = document.createElement('a');
           aLink.href = `https://github.com/${owner}/${repository}/actions`;

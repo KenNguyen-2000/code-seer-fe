@@ -1,7 +1,7 @@
 import { IDependencyMap } from '@/interfaces/dependency-map.interface';
 import { IDomain } from '@/interfaces/domain.interface';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchDomainById } from '../thunks/domain.thunk';
+import { deleteAVersion, fetchDomainById } from '../thunks/domain.thunk';
 import { fetchDepMaps } from '../thunks/map.thunk';
 
 export interface DomainSlice {
@@ -38,6 +38,12 @@ const domainSlice = createSlice({
       .addCase(fetchDomainById.rejected, (state, action) => {
         state.isLoading = false;
       });
+
+    builder.addCase(deleteAVersion.fulfilled, (state, action) => {
+      state.dependencyMaps = state.dependencyMaps.filter(
+        (map: IDependencyMap) => map.id !== action.payload.id
+      );
+    });
 
     builder
       .addCase(fetchDepMaps.pending, (state) => {

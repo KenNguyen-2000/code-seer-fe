@@ -138,7 +138,9 @@ const ActionBar = ({ explorer }: any) => {
       const repository = domain?.domain.repository.split('/')[1] as string;
       const res = await runWorkflow({ owner, repository, version });
       if (res.success) {
-        toast.success('Run workflow success! Please wait for redirect!');
+        toast.success('Run workflow success! Please wait for redirect!', {
+          autoClose: 15000,
+        });
       }
 
       setWorkflowRunning(true);
@@ -163,7 +165,10 @@ const ActionBar = ({ explorer }: any) => {
   const handleDeleteVersion = async (versionId: string) => {
     try {
       const res = await deleteMapVersion(versionId);
-      if (res.success) toast.success('Delete verion successfully!');
+      if (res.success) {
+        toast.success('Delete verion successfully!');
+        dispatch(fetchDepMaps(domain?.domain.id as string));
+      }
     } catch (error) {}
   };
 

@@ -1,15 +1,22 @@
+'use client';
+
 import Image from 'next/image';
-import React, { useEffect, useRef } from 'react';
+import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 
 import logo from '/public/codeseer-logo.png';
 import styles from './header-bar.module.scss';
 import Link from 'next/link';
 import ButtonFilled from '@/components/common/ButtonFilled';
+import useUser from '@/hooks/useUser';
 
 const HeaderBar = ({ location }: any) => {
   const headerRef = useRef<HTMLDivElement>(null);
+  const linkRef = useRef<HTMLAnchorElement>(null);
+
+  const user: any = useUser();
 
   useEffect(() => {
+    const headRef = headerRef.current;
     window.addEventListener('scroll', function (e) {
       if (headerRef.current !== null) {
         if (this.scrollY > 10) {
@@ -22,9 +29,22 @@ const HeaderBar = ({ location }: any) => {
     });
 
     return () => {
-      //   window.removeEventListener('scroll');
+      window.removeEventListener('scroll', function (e) {
+        if (headRef !== null) {
+          if (this.scrollY > 10) {
+            headRef.style.background = 'hsla(0,0%,100%,.8)';
+            headRef.style.boxShadow = 'inset 0 -1px 0 0 rgba(0,0,0,.1)';
+          } else {
+            headRef.removeAttribute('style');
+          }
+        }
+      });
     };
   }, []);
+  useEffect(() => {
+    if (typeof window !== undefined && user !== null && linkRef.current)
+      linkRef.current.style.display = 'none';
+  }, [user]);
 
   return (
     <div className={styles.wrapper} ref={headerRef}>
@@ -122,7 +142,7 @@ const HeaderBar = ({ location }: any) => {
           <div className={styles.header__right__wrapper}>
             <span className={styles.fade__in}>
               <div className={styles.logout__wrapper}>
-                <Link href='/login'>
+                <Link href='/login' ref={linkRef}>
                   <ButtonFilled className='rounded-md'>Sign In</ButtonFilled>
                 </Link>
               </div>
