@@ -6,7 +6,7 @@ import React from 'react';
 const Pricing = () => {
   const items = new Array(3).fill({
     type: 'Personal',
-    price: 5,
+    price: 2,
     features: [
       {
         label: 'Organization Management',
