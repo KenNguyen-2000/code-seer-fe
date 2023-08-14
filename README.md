@@ -1,38 +1,46 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1>CodeSeer</h1>
 
-## Getting Started
+This is a web application support dev teams to collab and work on codebase more effectively. Providing code visualization and workplace management
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+<ul>
+  <li>Organization Management</li>
+  <li>Workplace Management</li>
+  <li>Dependency Map Generation</li>
+  <li>Label, comment on nodes</li>
+</ul>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+<ul>
+  <li>NextJS</li>
+  <li>TailwindCSS</li>
+  <li>Typescript</li>
+  <li>Redux</li>
+</ul>
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Video Demos
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+<a href="https://www.facebook.com/watch/?v=1396495090893586&ref=sharing">CodeSeer intruction guides</a>
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## System Pages
 
-## Learn More
+<h3>Login Page</h3>
 
-To learn more about Next.js, take a look at the following resources:
+![screencapture-codeseer-xyz-2023-08-14-15_37_03](https://github.com/KenNguyen-2000/nextjs-code-seer/assets/77494428/9443ba96-c606-4a3e-87ed-2a64b5079694)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<h3>Welcome Page</h3>
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+![screencapture-codeseer-xyz-welcome-2023-08-14-15_26_21](https://github.com/KenNguyen-2000/nextjs-code-seer/assets/77494428/7d246154-9f6d-42b2-9df5-f506e2f1b38d)
 
-## Deploy on Vercel
+<h3>Dependency Map Page</h3>
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+<h4>Label nodes</h4>
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+![label_feature (1)](https://github.com/KenNguyen-2000/nextjs-code-seer/assets/77494428/e641b2ad-e8a1-4e56-88dc-8d1410ee4ea9)
+
+<h4>Comment on nodes</h4>
+
+![comment_feature](https://github.com/KenNguyen-2000/nextjs-code-seer/assets/77494428/f97ad9a0-52e6-4897-8137-0cdda222e976)
+
